@@ -163,6 +163,29 @@ window.KUSO_DB = (function () {
     ]}
   ];
 
+  /* ===== 本人が返信/コメントした時にファンが沸くテンプレ ===== */
+  var REPLY_FAN = [
+    "うわ、本人から返信きた！！家宝にします🙏",
+    "返信もらえてて草 うらやましすぎる",
+    "え、ちゃんと返信するタイプの神インフルエンサーじゃん…",
+    "この距離感よ。だから好きなんだよなあ",
+    "スクショして額に入れました",
+    "本人降臨してて草",
+    "神対応すぎて泣いた😭",
+    "ここに聖地が生まれました",
+    "返信欄まで面白いのずるい",
+    "私にもいつか返信ください！！🙏🙏"
+  ];
+
+  /* ===== 通知タブのテンプレ ===== */
+  var NOTIF_TEMPLATES = [
+    { t: "さんがあなたの投稿に「いいね！」しました", w: 50 },
+    { t: "さんがあなたをフォローしました", w: 20 },
+    { t: "さんがあなたのコメントに「いいね！」しました", w: 15 },
+    { t: "さんがストーリーズであなたをメンションしました", w: 8 },
+    { t: "さんがあなたの投稿を保存しました", w: 7 }
+  ];
+
   /* ===== バズ通知 ===== */
   var BUZZ_TEXTS = [
     "あなたの投稿が発見タブのトップに掲載されました",
@@ -187,6 +210,8 @@ window.KUSO_DB = (function () {
     CAPTION_TMPL: CAPTION_TMPL,
     DM_COMPANIES: DM_COMPANIES,
     STORY_ACCOUNTS: STORY_ACCOUNTS,
-    BUZZ_TEXTS: BUZZ_TEXTS
+    BUZZ_TEXTS: BUZZ_TEXTS,
+    REPLY_FAN: REPLY_FAN,
+    NOTIF_TEMPLATES: NOTIF_TEMPLATES
   };
 })();
