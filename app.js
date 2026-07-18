@@ -7,7 +7,7 @@
   "use strict";
 
   var DB = window.KUSO_DB;
-  var BRAND = "Kusostagram";            // 表示名（あとで改名するならここ）
+  var BRAND = "Shoninyokkyugram";       // 表示名（承認欲求グラム）
   var HANDLE = "watashi__official";     // 自分のアカウント名
 
   /* ================= util ================= */
@@ -103,6 +103,9 @@
   var posts = []; // {id, blob, url, caption, likesTarget, likesShown, comments, time, buzz, myLike}
 
   /* ================= stories ================= */
+  function storyImgUrl(seed) {
+    return "https://picsum.photos/seed/" + seed + "/720/1280";
+  }
   function renderStories() {
     var wrap = $("stories");
     wrap.innerHTML = "";
@@ -110,17 +113,76 @@
     me.className = "story";
     me.innerHTML = '<div class="ring" style="background:#dbdbdb"><div class="inner"></div></div><div class="name">ストーリーズ</div>';
     me.querySelector(".inner").appendChild(avatarEl(HANDLE, "face"));
-    me.addEventListener("click", function () { toast("ストーリーズは Coming soon 🚧"); });
+    me.addEventListener("click", function () { toast("自分のストーリーズ投稿は Coming soon 🚧"); });
     wrap.appendChild(me);
-    DB.STORY_USERS.forEach(function (name) {
+    DB.STORY_SET.forEach(function (st, i) {
       var s = document.createElement("div");
       s.className = "story";
       s.innerHTML = '<div class="ring"><div class="inner"></div></div><div class="name"></div>';
-      s.querySelector(".inner").appendChild(avatarEl(name, "face"));
-      s.querySelector(".name").textContent = name;
-      s.addEventListener("click", function () { toast("ストーリーズは Coming soon 🚧"); });
+      s.querySelector(".inner").appendChild(avatarEl(st.user, "face"));
+      s.querySelector(".name").textContent = st.user;
+      s.addEventListener("click", function () { openStory(i); });
       wrap.appendChild(s);
     });
+  }
+
+  /* ===== story viewer ===== */
+  var svIndex = 0;
+  var svTimer = null;
+  var SV_DURATION = 5000;
+
+  function renderSvProgress() {
+    var wrap = $("svProgress");
+    wrap.innerHTML = "";
+    DB.STORY_SET.forEach(function (_, i) {
+      var b = document.createElement("div");
+      b.className = "pbar" + (i < svIndex ? " done" : "");
+      b.innerHTML = "<i></i>";
+      wrap.appendChild(b);
+    });
+  }
+  function svStartTimer() {
+    clearInterval(svTimer);
+    var bar = $("svProgress").children[svIndex].querySelector("i");
+    var start = Date.now();
+    svTimer = setInterval(function () {
+      var t = Math.min(1, (Date.now() - start) / SV_DURATION);
+      bar.style.width = (t * 100) + "%";
+      if (t >= 1) svNext();
+    }, 60);
+  }
+  function svShow() {
+    var st = DB.STORY_SET[svIndex];
+    var slot = $("svAvatarSlot");
+    slot.innerHTML = "";
+    slot.appendChild(avatarEl(st.user));
+    $("svName").textContent = st.user;
+    $("svTime").textContent = rand(1, 12) + "時間前";
+    $("svText").textContent = st.text;
+    var img = $("svImg");
+    img.style.display = "";
+    img.onerror = function () { img.style.display = "none"; }; // オフライン時はグラデ背景
+    img.src = storyImgUrl(st.seed);
+    renderSvProgress();
+    svStartTimer();
+  }
+  function openStory(i) {
+    svIndex = i;
+    $("storyViewer").classList.add("open");
+    svShow();
+  }
+  function closeStory() {
+    clearInterval(svTimer);
+    $("storyViewer").classList.remove("open");
+  }
+  function svNext() {
+    if (svIndex >= DB.STORY_SET.length - 1) { closeStory(); return; }
+    svIndex++;
+    svShow();
+  }
+  function svPrev() {
+    if (svIndex > 0) svIndex--;
+    svShow();
   }
 
   /* ================= comments ================= */
@@ -717,6 +779,9 @@
   $("dmSheetClose").addEventListener("click", function () { $("dmSheet").classList.remove("open"); });
   $("dmSheet").addEventListener("click", function (e) { if (e.target === this) this.classList.remove("open"); });
   $("buzzClose").addEventListener("click", function () { $("buzzOverlay").classList.remove("show"); });
+  $("svClose").addEventListener("click", closeStory);
+  $("svNext").addEventListener("click", svNext);
+  $("svPrev").addEventListener("click", svPrev);
 
   /* ================= init ================= */
   openDb().then(dbAll).then(function (saved) {

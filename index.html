@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#ffffff">
-<title>Kusostagram</title>
-<meta name="description" content="インフルエンサーの気分になれるクソインスタグラム。写真は端末の外に出ません（AIコメントON時を除く）。">
+<title>Shoninyokkyugram</title>
+<meta name="description" content="承認欲求グラム — インフルエンサーの気分になれる偽インスタ。写真は端末の外に出ません（AIコメントON時を除く）。">
 <style>
   :root {
     --bg: #ffffff;
@@ -51,8 +51,9 @@
   }
   .logo {
     font-family: "Segoe Script", "Brush Script MT", cursive;
-    font-size: 24px;
+    font-size: 19px;
     font-weight: 600;
+    letter-spacing: -0.02em;
   }
   .topbar .icons { display: flex; gap: 22px; }
   .icon-btn {
@@ -328,6 +329,63 @@
 
   .view { display: none; }
   .view.active { display: block; }
+
+  /* ===== story viewer ===== */
+  .story-viewer {
+    position: fixed; inset: 0; z-index: 100;
+    background: #000;
+    display: none; flex-direction: column;
+    max-width: 470px; margin: 0 auto;
+  }
+  .story-viewer.open { display: flex; }
+  .sv-progress {
+    display: flex; gap: 4px;
+    padding: 10px 10px 6px;
+  }
+  .sv-progress .pbar {
+    flex: 1; height: 2.5px; border-radius: 2px;
+    background: rgba(255,255,255,0.3);
+    overflow: hidden;
+  }
+  .sv-progress .pbar i {
+    display: block; height: 100%; background: #fff; width: 0%;
+  }
+  .sv-progress .pbar.done i { width: 100%; }
+  .sv-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px; color: #fff;
+  }
+  .sv-head .avatar { width: 32px; height: 32px; }
+  .sv-head .sv-name { font-weight: 600; font-size: 14px; }
+  .sv-head .sv-time { color: rgba(255,255,255,0.6); font-size: 12px; }
+  .sv-head .sv-close {
+    margin-left: auto; background: none; border: none; color: #fff;
+    font-size: 24px; cursor: pointer; line-height: 1;
+  }
+  .sv-stage {
+    flex: 1; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sv-img {
+    width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;
+  }
+  .sv-fallback {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #833ab4, #fd1d1d, #fcb045);
+  }
+  .sv-text {
+    position: relative; z-index: 2;
+    color: #fff; font-size: 20px; font-weight: 700;
+    text-align: center; padding: 0 30px;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.65);
+    align-self: flex-end; margin-bottom: 70px; width: 100%;
+  }
+  .sv-tap {
+    position: absolute; top: 0; bottom: 0; width: 50%; z-index: 3;
+    background: none; border: none; cursor: pointer;
+  }
+  .sv-tap.left { left: 0; }
+  .sv-tap.right { right: 0; }
 </style>
 </head>
 <body>
@@ -335,7 +393,7 @@
 <div id="phone">
   <!-- top bar -->
   <div class="topbar">
-    <span class="logo" id="brandLogo">Kusostagram</span>
+    <span class="logo" id="brandLogo">Shoninyokkyugram</span>
     <div class="icons">
       <button class="icon-btn" id="notifBell" aria-label="通知">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
@@ -447,6 +505,24 @@
   <div class="sheet-body">
     <div class="sheet-title" id="dmSheetTitle">メッセージ<button class="sheet-close" id="dmSheetClose">✕</button></div>
     <div class="dm-detail" id="dmDetail"></div>
+  </div>
+</div>
+
+<!-- story viewer -->
+<div class="story-viewer" id="storyViewer">
+  <div class="sv-progress" id="svProgress"></div>
+  <div class="sv-head">
+    <div id="svAvatarSlot"></div>
+    <span class="sv-name" id="svName"></span>
+    <span class="sv-time" id="svTime"></span>
+    <button class="sv-close" id="svClose">✕</button>
+  </div>
+  <div class="sv-stage">
+    <div class="sv-fallback"></div>
+    <img class="sv-img" id="svImg" alt="">
+    <div class="sv-text" id="svText"></div>
+    <button class="sv-tap left" id="svPrev" aria-label="前へ"></button>
+    <button class="sv-tap right" id="svNext" aria-label="次へ"></button>
   </div>
 </div>
 
