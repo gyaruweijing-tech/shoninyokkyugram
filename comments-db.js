@@ -120,19 +120,47 @@ window.KUSO_DB = (function () {
   ];
 
   /* ===== ストーリーズ（フリー画像 picsum ＋ インフルエンサーっぽい一言） ===== */
-  /* icon: ストーリーリングに出すアイコン画像。
-     人物 = pravatar（フリー素材の顔写真）、風景派 = picsum */
-  var STORY_SET = [
-    { user: "rina_gal",       seed: "morning-coffee", icon: "https://i.pravatar.cc/150?img=47", text: "朝活☕✨ #丁寧な暮らし" },
-    { user: "emma_travels",   seed: "sunrise-hill",   icon: "https://i.pravatar.cc/150?img=44", text: "Morning vibes 🌅 #nofilter" },
-    { user: "yuna.xoxo",      seed: "sweets-cafe",    icon: "https://i.pravatar.cc/150?img=45", text: "ご褒美スイーツ🍰💕 並んだ甲斐あった" },
-    { user: "kei.mindset",    seed: "running-road",   icon: "https://i.pravatar.cc/150?img=12", text: "5時起きラン🏃 今日も自分に勝った" },
-    { user: "takashi_0358",   seed: "golf-green",     icon: "https://i.pravatar.cc/150?img=52", text: "ゴルフ日和だネ⛳😄ナイスショット❗" },
-    { user: "official_taku",  seed: "studio-light",   icon: "https://i.pravatar.cc/150?img=59", text: "撮影終わり🎬 みんなお疲れさま" },
-    { user: "mia.wanderlust", seed: "beach-blue",     icon: "https://picsum.photos/seed/beach-blue/150/150", text: "Beach day 🌊 living my best life" },
-    { user: "sofia_bella",    seed: "outfit-street",  icon: "https://i.pravatar.cc/150?img=49", text: "New outfit 🖤 link in bio" },
-    { user: "fan_no1_",       seed: "phone-desk",     icon: "https://picsum.photos/seed/phone-desk/150/150", text: "推しの投稿待機中📱（3時間目）" },
-    { user: "carlos_mx",      seed: "tacos-night",    icon: "https://i.pravatar.cc/150?img=68", text: "Tacos night 🌮🔥 vamos!!" }
+  /* アカウントごとにストーリーを1〜3本持つ（本家仕様: プログレスバーはアカウント内の本数分）
+     icon: 人物 = pravatar（フリー素材の顔写真）、風景派 = picsum */
+  var STORY_ACCOUNTS = [
+    { user: "rina_gal", icon: "https://i.pravatar.cc/150?img=47", stories: [
+      { seed: "morning-coffee", text: "朝活☕✨ #丁寧な暮らし" },
+      { seed: "latte-art",      text: "ラテアート優勝すぎん？🥛" },
+      { seed: "new-nail",       text: "ネイル変えた💅 気づいた人天才" }
+    ]},
+    { user: "emma_travels", icon: "https://i.pravatar.cc/150?img=44", stories: [
+      { seed: "sunrise-hill", text: "Morning vibes 🌅 #nofilter" },
+      { seed: "airport-gate", text: "Next stop: Tokyo ✈️✨" }
+    ]},
+    { user: "yuna.xoxo", icon: "https://i.pravatar.cc/150?img=45", stories: [
+      { seed: "sweets-cafe", text: "ご褒美スイーツ🍰💕 並んだ甲斐あった" }
+    ]},
+    { user: "kei.mindset", icon: "https://i.pravatar.cc/150?img=12", stories: [
+      { seed: "running-road", text: "5時起きラン🏃 今日も自分に勝った" },
+      { seed: "book-note",    text: "朝読書📚 インプットの鬼になる" }
+    ]},
+    { user: "takashi_0358", icon: "https://i.pravatar.cc/150?img=52", stories: [
+      { seed: "golf-green", text: "ゴルフ日和だネ⛳😄ナイスショット❗" }
+    ]},
+    { user: "official_taku", icon: "https://i.pravatar.cc/150?img=59", stories: [
+      { seed: "studio-light", text: "撮影終わり🎬 みんなお疲れさま" },
+      { seed: "green-room",   text: "楽屋なう。差し入れ感謝🙏" }
+    ]},
+    { user: "mia.wanderlust", icon: "https://picsum.photos/seed/beach-blue/150/150", stories: [
+      { seed: "beach-blue",  text: "Beach day 🌊 living my best life" },
+      { seed: "sunset-surf", text: "golden hour 🌇 no words needed" }
+    ]},
+    { user: "sofia_bella", icon: "https://i.pravatar.cc/150?img=49", stories: [
+      { seed: "outfit-street", text: "New outfit 🖤 link in bio" }
+    ]},
+    { user: "fan_no1_", icon: "https://picsum.photos/seed/phone-desk/150/150", stories: [
+      { seed: "phone-desk", text: "推しの投稿待機中📱（3時間目）" },
+      { seed: "goods-wall", text: "祭壇、更新しました🙏✨" },
+      { seed: "snack-pile", text: "夜通し待機用の夜食スタンバイ🍫" }
+    ]},
+    { user: "carlos_mx", icon: "https://i.pravatar.cc/150?img=68", stories: [
+      { seed: "tacos-night", text: "Tacos night 🌮🔥 vamos!!" }
+    ]}
   ];
 
   /* ===== バズ通知 ===== */
@@ -158,7 +186,7 @@ window.KUSO_DB = (function () {
     ANTI_DRAMA: ANTI_DRAMA,
     CAPTION_TMPL: CAPTION_TMPL,
     DM_COMPANIES: DM_COMPANIES,
-    STORY_SET: STORY_SET,
+    STORY_ACCOUNTS: STORY_ACCOUNTS,
     BUZZ_TEXTS: BUZZ_TEXTS
   };
 })();

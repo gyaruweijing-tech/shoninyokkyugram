@@ -115,12 +115,12 @@
     me.querySelector(".inner").appendChild(avatarEl(HANDLE, "face"));
     me.addEventListener("click", function () { toast("自分のストーリーズ投稿は Coming soon 🚧"); });
     wrap.appendChild(me);
-    DB.STORY_SET.forEach(function (st, i) {
+    DB.STORY_ACCOUNTS.forEach(function (acc, i) {
       var s = document.createElement("div");
       s.className = "story";
       s.innerHTML = '<div class="ring"><div class="inner"></div></div><div class="name"></div>';
-      s.querySelector(".inner").appendChild(storyIconEl(st));
-      s.querySelector(".name").textContent = st.user;
+      s.querySelector(".inner").appendChild(storyIconEl(acc));
+      s.querySelector(".name").textContent = acc.user;
       s.addEventListener("click", function () { openStory(i); });
       wrap.appendChild(s);
     });
@@ -139,24 +139,25 @@
     return img;
   }
 
-  /* ===== story viewer ===== */
-  var svIndex = 0;
+  /* ===== story viewer（本家仕様: プログレスバーはアカウント内の本数分） ===== */
+  var svAcc = 0;    // 何番目のアカウントか
+  var svSlide = 0;  // そのアカウントの何本目か
   var svTimer = null;
   var SV_DURATION = 5000;
 
   function renderSvProgress() {
     var wrap = $("svProgress");
     wrap.innerHTML = "";
-    DB.STORY_SET.forEach(function (_, i) {
+    DB.STORY_ACCOUNTS[svAcc].stories.forEach(function (_, i) {
       var b = document.createElement("div");
-      b.className = "pbar" + (i < svIndex ? " done" : "");
+      b.className = "pbar" + (i < svSlide ? " done" : "");
       b.innerHTML = "<i></i>";
       wrap.appendChild(b);
     });
   }
   function svStartTimer() {
     clearInterval(svTimer);
-    var bar = $("svProgress").children[svIndex].querySelector("i");
+    var bar = $("svProgress").children[svSlide].querySelector("i");
     var start = Date.now();
     svTimer = setInterval(function () {
       var t = Math.min(1, (Date.now() - start) / SV_DURATION);
@@ -165,13 +166,14 @@
     }, 60);
   }
   function svShow() {
-    var st = DB.STORY_SET[svIndex];
+    var acc = DB.STORY_ACCOUNTS[svAcc];
+    var st = acc.stories[svSlide];
     var slot = $("svAvatarSlot");
     slot.innerHTML = "";
-    var icon = storyIconEl(st);
+    var icon = storyIconEl(acc);
     icon.classList.add("sv-avatar-img");
     slot.appendChild(icon);
-    $("svName").textContent = st.user;
+    $("svName").textContent = acc.user;
     $("svTime").textContent = rand(1, 12) + "時間前";
     $("svText").textContent = st.text;
     var img = $("svImg");
@@ -182,7 +184,8 @@
     svStartTimer();
   }
   function openStory(i) {
-    svIndex = i;
+    svAcc = i;
+    svSlide = 0;
     $("storyViewer").classList.add("open");
     svShow();
   }
@@ -191,12 +194,23 @@
     $("storyViewer").classList.remove("open");
   }
   function svNext() {
-    if (svIndex >= DB.STORY_SET.length - 1) { closeStory(); return; }
-    svIndex++;
+    var acc = DB.STORY_ACCOUNTS[svAcc];
+    if (svSlide < acc.stories.length - 1) {
+      svSlide++;                       // 同じアカウントの次のストーリー
+    } else if (svAcc < DB.STORY_ACCOUNTS.length - 1) {
+      svAcc++; svSlide = 0;            // 次のアカウントへ（バーはリセット）
+    } else {
+      closeStory(); return;            // 最後まで見たら閉じる
+    }
     svShow();
   }
   function svPrev() {
-    if (svIndex > 0) svIndex--;
+    if (svSlide > 0) {
+      svSlide--;
+    } else if (svAcc > 0) {
+      svAcc--;                         // 前のアカウントへ（本家同様その先頭から）
+      svSlide = 0;
+    }
     svShow();
   }
 
