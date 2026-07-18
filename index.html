@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<title>Kusostagram</title>
+<meta name="description" content="インフルエンサーの気分になれるクソインスタグラム。写真は端末の外に出ません（AIコメントON時を除く）。">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #262626;
+    --sub: #8e8e8e;
+    --line: #dbdbdb;
+    --blue: #0095f6;
+    --red: #ed4956;
+    --story: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: #fafafa;
+    color: var(--ink);
+    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    user-select: none;
+  }
+  #phone {
+    max-width: 470px;
+    margin: 0 auto;
+    background: var(--bg);
+    min-height: 100svh;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    padding-bottom: 60px;
+    position: relative;
+  }
+
+  /* ===== top bar ===== */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+  }
+  .logo {
+    font-family: "Segoe Script", "Brush Script MT", cursive;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .topbar .icons { display: flex; gap: 22px; }
+  .icon-btn {
+    background: none; border: none; cursor: pointer; color: var(--ink);
+    position: relative; padding: 0;
+  }
+  .icon-btn svg { width: 26px; height: 26px; display: block; }
+  .badge {
+    position: absolute; top: -6px; right: -8px;
+    background: var(--red); color: #fff;
+    font-size: 10px; font-weight: 700;
+    min-width: 16px; height: 16px; border-radius: 8px;
+    display: none; align-items: center; justify-content: center;
+    padding: 0 4px;
+  }
+  .badge.show { display: flex; }
+
+  /* ===== stories ===== */
+  .stories {
+    display: flex; gap: 14px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--line);
+    scrollbar-width: none;
+  }
+  .stories::-webkit-scrollbar { display: none; }
+  .story { text-align: center; flex-shrink: 0; cursor: pointer; }
+  .story .ring {
+    width: 62px; height: 62px; border-radius: 50%;
+    background: var(--story);
+    padding: 2.5px;
+  }
+  .story .ring .inner {
+    width: 100%; height: 100%; border-radius: 50%;
+    background: var(--bg); padding: 2.5px;
+  }
+  .story .face {
+    width: 100%; height: 100%; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 20px;
+  }
+  .story .name {
+    font-size: 11px; color: var(--ink); margin-top: 4px;
+    max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ===== feed / post ===== */
+  .post { border-bottom: 1px solid var(--line); background: var(--bg); }
+  .post-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+  }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 15px;
+    flex-shrink: 0;
+  }
+  .uname { font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .vbadge { width: 14px; height: 14px; flex-shrink: 0; }
+  .post-img-wrap { position: relative; overflow: hidden; }
+  .post-img { width: 100%; display: block; max-height: 580px; object-fit: cover; background: #f1f1f1; }
+  .post-actions {
+    display: flex; align-items: center; gap: 16px;
+    padding: 8px 14px 0;
+  }
+  .post-actions .spacer { flex: 1; }
+  .likes-line { padding: 6px 14px 0; font-weight: 600; }
+  .caption-line { padding: 2px 14px; }
+  .caption-line .u { font-weight: 600; margin-right: 6px; }
+  .view-comments {
+    padding: 2px 14px; color: var(--sub); cursor: pointer; background: none; border: none;
+    font-size: 14px; display: block; text-align: left;
+  }
+  .post-time { padding: 2px 14px 12px; color: var(--sub); font-size: 11px; text-transform: uppercase; }
+
+  .heart-btn.liked svg { fill: var(--red); stroke: var(--red); }
+
+  /* flying hearts */
+  .fly-heart {
+    position: fixed; font-size: 22px; pointer-events: none; z-index: 60;
+    animation: flyup 1.4s ease-out forwards;
+  }
+  @keyframes flyup {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 1; transform: scale(1.15); }
+    100% { transform: translateY(-140px) scale(1); opacity: 0; }
+  }
+
+  /* ===== comment sheet ===== */
+  .sheet {
+    position: fixed; inset: 0; z-index: 40;
+    background: rgba(0,0,0,0.5);
+    display: none;
+  }
+  .sheet.open { display: block; }
+  .sheet-body {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    max-width: 470px; margin: 0 auto;
+    background: var(--bg);
+    border-radius: 14px 14px 0 0;
+    max-height: 78svh;
+    display: flex; flex-direction: column;
+    animation: sheetup 0.25s ease;
+  }
+  @keyframes sheetup { from { transform: translateY(40%); } to { transform: translateY(0); } }
+  .sheet-title {
+    text-align: center; font-weight: 600; padding: 12px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .sheet-close {
+    position: absolute; right: 14px; top: 10px;
+    background: none; border: none; font-size: 20px; cursor: pointer; color: var(--ink);
+  }
+  .comments-list { overflow-y: auto; padding: 8px 0; flex: 1; }
+  .comment {
+    display: flex; gap: 10px; padding: 8px 14px;
+    animation: cin 0.3s ease;
+  }
+  @keyframes cin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+  .comment .avatar { width: 30px; height: 30px; font-size: 13px; }
+  .comment .body { flex: 1; min-width: 0; }
+  .comment .cu { font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 3px; }
+  .comment .ct { font-size: 14px; word-break: break-word; }
+  .comment .meta { font-size: 11px; color: var(--sub); margin-top: 2px; display: flex; gap: 12px; }
+  .comment .cheart { color: var(--sub); background: none; border: none; font-size: 12px; padding-top: 6px; }
+  .comment.ai-comment .cu::after {
+    content: "AI"; font-size: 8px; background: #efe7ff; color: #7c4dff;
+    border-radius: 3px; padding: 0 3px; margin-left: 4px; font-weight: 700;
+  }
+
+  /* ===== new post flow ===== */
+  .modal {
+    position: fixed; inset: 0; z-index: 50;
+    background: var(--bg);
+    max-width: 470px; margin: 0 auto;
+    display: none; flex-direction: column;
+  }
+  .modal.open { display: flex; }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--line);
+    font-weight: 600;
+  }
+  .modal-head button { background: none; border: none; font-size: 15px; cursor: pointer; }
+  .modal-head .next { color: var(--blue); font-weight: 700; }
+  .modal-body { flex: 1; overflow-y: auto; }
+  #previewImg { width: 100%; max-height: 45svh; object-fit: contain; background: #000; }
+  .compose { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .compose textarea {
+    width: 100%; min-height: 84px; border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px; font: inherit; resize: vertical;
+  }
+  .tmpl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    border: 1px solid var(--line); border-radius: 999px;
+    background: #fafafa; padding: 6px 12px; font-size: 12px; cursor: pointer;
+  }
+  .chip:active { background: #eee; }
+  .chip.ai { color: #7c4dff; border-color: #d8c9ff; }
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+  }
+  .toggle-row .t-label { font-size: 13px; }
+  .toggle-row .t-note { font-size: 11px; color: var(--sub); }
+  .switch { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0; border-radius: 13px; background: #ccc; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .slider::before {
+    content: ""; position: absolute; width: 22px; height: 22px; border-radius: 50%;
+    background: #fff; top: 2px; left: 2px; transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .switch input:checked + .slider { background: var(--blue); }
+  .switch input:checked + .slider::before { transform: translateX(18px); }
+
+  /* ===== DM view ===== */
+  .dm-item {
+    display: flex; gap: 12px; padding: 12px 16px; cursor: pointer;
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .dm-item .avatar { width: 44px; height: 44px; }
+  .dm-item .dm-name { font-weight: 600; }
+  .dm-item .dm-prev { color: var(--sub); font-size: 13px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .dm-empty { text-align: center; color: var(--sub); padding: 60px 20px; }
+  .dm-detail { padding: 16px; white-space: pre-wrap; }
+  .dm-detail .bubble {
+    background: #efefef; border-radius: 16px; padding: 12px 14px; margin-top: 10px;
+    font-size: 14px;
+  }
+
+  /* ===== profile ===== */
+  .profile-head { padding: 16px; display: flex; align-items: center; gap: 24px; }
+  .profile-head .avatar { width: 80px; height: 80px; font-size: 34px; }
+  .stats { display: flex; gap: 22px; flex: 1; justify-content: space-around; text-align: center; }
+  .stats b { display: block; font-size: 17px; }
+  .stats span { font-size: 12.5px; color: var(--ink); }
+  .profile-bio { padding: 0 16px 14px; font-size: 13.5px; }
+  .profile-bio .pname { font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .grid3 img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: pointer; }
+  .grid-empty { grid-column: 1 / -1; text-align: center; color: var(--sub); padding: 50px 20px; }
+
+  /* ===== insights ===== */
+  .insight-body { padding: 16px; }
+  .insight-body h3 { font-size: 15px; margin-bottom: 14px; }
+  .bar-row { margin-bottom: 12px; }
+  .bar-row .bl { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .bar-row .bl b { font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; border-radius: 4px; background: #efefef; overflow: hidden; }
+  .bar i {
+    display: block; height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
+    width: 0; transition: width 0.9s cubic-bezier(.22,.61,.36,1);
+  }
+  .insight-note { font-size: 11px; color: var(--sub); margin-top: 14px; }
+
+  /* ===== bottom nav ===== */
+  .bottomnav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+    max-width: 470px; margin: 0 auto;
+    background: var(--bg); border-top: 1px solid var(--line);
+    display: flex; justify-content: space-around; align-items: center;
+    height: 52px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottomnav .icon-btn svg { width: 26px; height: 26px; }
+  .bottomnav .avatar { width: 26px; height: 26px; font-size: 11px; cursor: pointer; }
+
+  /* ===== toast / notification ===== */
+  .toast {
+    position: fixed; left: 50%; bottom: 90px; transform: translate(-50%, 16px);
+    background: #262626; color: #fff; padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; opacity: 0; pointer-events: none; transition: 0.25s; z-index: 70;
+    max-width: 88vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .notif {
+    position: fixed; top: 12px; left: 50%; transform: translate(-50%, -80px);
+    width: min(430px, 92vw);
+    background: rgba(38,38,38,0.96); color: #fff;
+    border-radius: 14px; padding: 12px 14px;
+    display: flex; gap: 10px; align-items: center;
+    z-index: 80; transition: transform 0.35s cubic-bezier(.22,.61,.36,1);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .notif.show { transform: translate(-50%, 0); }
+  .notif .n-icon { font-size: 22px; }
+  .notif .n-title { font-weight: 700; font-size: 13px; }
+  .notif .n-body { font-size: 12.5px; opacity: 0.9; }
+
+  /* buzz overlay */
+  .buzz {
+    position: fixed; inset: 0; z-index: 90; display: none;
+    align-items: center; justify-content: center; flex-direction: column; gap: 10px;
+    background: radial-gradient(circle, rgba(255, 60, 120, 0.92), rgba(120, 40, 200, 0.94));
+    color: #fff; text-align: center;
+  }
+  .buzz.show { display: flex; animation: buzzin 0.4s ease; }
+  @keyframes buzzin { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; } }
+  .buzz h2 { font-size: 34px; letter-spacing: 0.05em; }
+  .buzz p { font-size: 15px; opacity: 0.95; }
+  .buzz .close-buzz {
+    margin-top: 16px; background: #fff; color: #262626; border: none;
+    padding: 10px 26px; border-radius: 999px; font-weight: 700; cursor: pointer;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+</style>
+</head>
+<body>
+
+<div id="phone">
+  <!-- top bar -->
+  <div class="topbar">
+    <span class="logo" id="brandLogo">Kusostagram</span>
+    <div class="icons">
+      <button class="icon-btn" id="notifBell" aria-label="通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        <span class="badge" id="bellBadge">0</span>
+      </button>
+      <button class="icon-btn" id="dmBtn" aria-label="DM">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+        <span class="badge" id="dmBadge">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- home view -->
+  <div class="view active" id="view-home">
+    <div class="stories" id="stories"></div>
+    <div id="feed"></div>
+  </div>
+
+  <!-- dm view -->
+  <div class="view" id="view-dm">
+    <div id="dmList"></div>
+  </div>
+
+  <!-- profile view -->
+  <div class="view" id="view-profile">
+    <div class="profile-head">
+      <div class="avatar" id="profileAvatar" style="background:#d63c7b">Y</div>
+      <div class="stats">
+        <div><b id="statPosts">0</b><span>投稿</span></div>
+        <div><b id="statFollowers">0</b><span>フォロワー</span></div>
+        <div><b>82</b><span>フォロー中</span></div>
+      </div>
+    </div>
+    <div class="profile-bio">
+      <p class="pname"><span id="profileName">you</span>
+        <svg class="vbadge" viewBox="0 0 24 24" fill="#0095f6"><path d="M12 2l2.4 2.4 3.3-.5.5 3.3L20.6 9 22 12l-1.4 3-2.4 1.8-.5 3.3-3.3-.5L12 22l-2.4-2.4-3.3.5-.5-3.3L3.4 15 2 12l1.4-3 2.4-1.8.5-3.3 3.3.5z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </p>
+      <p>インフルエンサー / 何もしてないのに有名</p>
+      <p style="color:#00376b">お仕事のご依頼はDMへ</p>
+    </div>
+    <div class="grid3" id="profileGrid"></div>
+  </div>
+
+  <!-- bottom nav -->
+  <div class="bottomnav">
+    <button class="icon-btn" data-nav="home" aria-label="ホーム">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+    </button>
+    <button class="icon-btn" data-nav="search" aria-label="検索">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    </button>
+    <button class="icon-btn" data-nav="new" aria-label="投稿">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+    </button>
+    <button class="icon-btn" data-nav="reels" aria-label="リール">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M8.5 3l3 5.5M14.5 3l3 5.5"/><path d="m10.5 12.5 4.5 2.7-4.5 2.7z" fill="currentColor"/></svg>
+    </button>
+    <div class="avatar" data-nav="profile" id="navAvatar" style="background:#d63c7b">Y</div>
+  </div>
+</div>
+
+<!-- hidden file input -->
+<input type="file" id="fileInput" accept="image/*" hidden>
+
+<!-- new post modal -->
+<div class="modal" id="composeModal">
+  <div class="modal-head">
+    <button id="composeCancel">キャンセル</button>
+    <span>新規投稿</span>
+    <button class="next" id="composeShare">シェア</button>
+  </div>
+  <div class="modal-body">
+    <img id="previewImg" alt="">
+    <div class="compose">
+      <textarea id="captionInput" placeholder="キャプションを書く…"></textarea>
+      <div class="tmpl-row" id="tmplRow"></div>
+      <div class="toggle-row">
+        <div>
+          <div class="t-label">AIコメント（写真の中身に触れるコメント）</div>
+          <div class="t-note">ONにするとこの写真がAI（Gemini）に送信されます</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="aiToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- comments sheet -->
+<div class="sheet" id="commentSheet">
+  <div class="sheet-body">
+    <div class="sheet-title">コメント<button class="sheet-close" id="sheetClose">✕</button></div>
+    <div class="comments-list" id="commentsList"></div>
+  </div>
+</div>
+
+<!-- insights sheet -->
+<div class="sheet" id="insightSheet">
+  <div class="sheet-body">
+    <div class="sheet-title">インサイト<button class="sheet-close" id="insightClose">✕</button></div>
+    <div class="insight-body" id="insightBody"></div>
+  </div>
+</div>
+
+<!-- dm detail sheet -->
+<div class="sheet" id="dmSheet">
+  <div class="sheet-body">
+    <div class="sheet-title" id="dmSheetTitle">メッセージ<button class="sheet-close" id="dmSheetClose">✕</button></div>
+    <div class="dm-detail" id="dmDetail"></div>
+  </div>
+</div>
+
+<!-- buzz overlay -->
+<div class="buzz" id="buzzOverlay">
+  <h2>🔥 大バズり中 🔥</h2>
+  <p id="buzzText">あなたの投稿が発見タブに掲載されました</p>
+  <button class="close-buzz" id="buzzClose">受け入れる</button>
+</div>
+
+<!-- notification banner -->
+<div class="notif" id="notifBanner">
+  <span class="n-icon" id="notifIcon">📩</span>
+  <div>
+    <div class="n-title" id="notifTitle"></div>
+    <div class="n-body" id="notifBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="comments-db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
