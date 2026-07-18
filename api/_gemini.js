@@ -22,7 +22,7 @@ function rateLimit(ip) {
     globalCount = 0;
     hits.clear();
   }
-  if (globalCount >= 400) return "サービス全体の本日の上限に達しました。また明日！";
+  if (globalCount >= 150) return "サービス全体の本日の上限に達しました。また明日！";
   const rec = hits.get(ip) || { count: 0 };
   if (rec.count >= 40) return "本日の利用上限に達しました。また明日！";
   rec.count++;

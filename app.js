@@ -119,11 +119,24 @@
       var s = document.createElement("div");
       s.className = "story";
       s.innerHTML = '<div class="ring"><div class="inner"></div></div><div class="name"></div>';
-      s.querySelector(".inner").appendChild(avatarEl(st.user, "face"));
+      s.querySelector(".inner").appendChild(storyIconEl(st));
       s.querySelector(".name").textContent = st.user;
       s.addEventListener("click", function () { openStory(i); });
       wrap.appendChild(s);
     });
+  }
+
+  /* アイコン画像（読み込み失敗時はイニシャル丸にフォールバック） */
+  function storyIconEl(st) {
+    var img = document.createElement("img");
+    img.className = "face-img";
+    img.alt = "";
+    img.src = st.icon;
+    img.onerror = function () {
+      var fb = avatarEl(st.user, "face");
+      img.replaceWith(fb);
+    };
+    return img;
   }
 
   /* ===== story viewer ===== */
@@ -155,7 +168,9 @@
     var st = DB.STORY_SET[svIndex];
     var slot = $("svAvatarSlot");
     slot.innerHTML = "";
-    slot.appendChild(avatarEl(st.user));
+    var icon = storyIconEl(st);
+    icon.classList.add("sv-avatar-img");
+    slot.appendChild(icon);
     $("svName").textContent = st.user;
     $("svTime").textContent = rand(1, 12) + "時間前";
     $("svText").textContent = st.text;
@@ -211,7 +226,7 @@
         name: makeName(pick(p.names)),
         text: pick(p.texts),
         verified: !!p.verified,
-        likes: Math.random() < 0.3 ? rand(50, 3000) : rand(0, 40),
+        likes: Math.random() < 0.3 ? rand(50, 3000) : rand(2, 40),
         ai: false
       });
     }
@@ -245,7 +260,7 @@
     txt.textContent = c.text;
     var meta = document.createElement("div");
     meta.className = "meta";
-    meta.textContent = c.likes > 0 ? "いいね" + fmtShort(c.likes) + "件　返信する" : "返信する";
+    meta.textContent = "いいね" + fmtShort(Math.max(1, c.likes)) + "件　返信する";
     body.appendChild(head); body.appendChild(txt); body.appendChild(meta);
     div.appendChild(body);
     var h = document.createElement("button");
@@ -573,8 +588,11 @@
     if (pendingUrl) URL.revokeObjectURL(pendingUrl);
     pendingUrl = URL.createObjectURL(file);
     $("previewImg").src = pendingUrl;
+    $("previewThumb").src = pendingUrl;
     $("captionInput").value = "";
     renderTmplChips();
+    $("cmStep1").hidden = false;
+    $("cmStep2").hidden = true;
     $("composeModal").classList.add("open");
   }
 
@@ -770,6 +788,18 @@
   $("composeCancel").addEventListener("click", function () {
     $("composeModal").classList.remove("open");
     pendingFile = null;
+  });
+  $("toStep2").addEventListener("click", function () {
+    $("cmStep1").hidden = true;
+    $("cmStep2").hidden = false;
+  });
+  $("backStep1").addEventListener("click", function () {
+    $("cmStep2").hidden = true;
+    $("cmStep1").hidden = false;
+  });
+  $("rePick").addEventListener("click", function () { $("fileInput").click(); });
+  document.querySelectorAll("[data-cs]").forEach(function (b) {
+    b.addEventListener("click", function () { toast("Coming soon 🚧"); });
   });
   $("composeShare").addEventListener("click", share);
   $("sheetClose").addEventListener("click", function () { $("commentSheet").classList.remove("open"); });

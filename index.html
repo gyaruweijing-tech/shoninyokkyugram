@@ -99,6 +99,11 @@
     font-size: 11px; color: var(--ink); margin-top: 4px;
     max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+  .face-img {
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover; display: block;
+  }
+  .sv-avatar-img { width: 32px; height: 32px; }
 
   /* ===== feed / post ===== */
   .post { border-bottom: 1px solid var(--line); background: var(--bg); }
@@ -194,20 +199,56 @@
     display: none; flex-direction: column;
   }
   .modal.open { display: flex; }
+  .cm-step { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .cm-step[hidden] { display: none; }
   .modal-head {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 16px; border-bottom: 1px solid var(--line);
     font-weight: 600;
   }
-  .modal-head button { background: none; border: none; font-size: 15px; cursor: pointer; }
-  .modal-head .next { color: var(--blue); font-weight: 700; }
+  .modal-head button { background: none; border: none; font-size: 17px; cursor: pointer; }
+  .modal-head .next { color: var(--blue); font-weight: 700; font-size: 15px; }
   .modal-body { flex: 1; overflow-y: auto; }
-  #previewImg { width: 100%; max-height: 45svh; object-fit: contain; background: #000; }
-  .compose { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-  .compose textarea {
-    width: 100%; min-height: 84px; border: 1px solid var(--line); border-radius: 8px;
-    padding: 10px; font: inherit; resize: vertical;
+  #previewImg { width: 100%; max-height: 62svh; object-fit: contain; background: #000; }
+  .recent-row {
+    display: block; width: 100%; text-align: left;
+    background: none; border: none; cursor: pointer;
+    padding: 14px 16px; font-weight: 600; font-size: 14px;
   }
+  .recent-row span { color: var(--sub); font-weight: 400; font-size: 12px; }
+  .cap-row {
+    display: flex; gap: 12px; padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cap-row img {
+    width: 56px; height: 56px; object-fit: cover; flex-shrink: 0;
+    border-radius: 4px; background: #eee;
+  }
+  .cap-row textarea {
+    flex: 1; min-height: 76px; border: none; outline: none;
+    font: inherit; resize: none; padding-top: 2px;
+  }
+  .compose { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .pill-row { display: flex; gap: 8px; }
+  .pill {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: #fafafa; padding: 8px 14px; font-size: 13px; cursor: pointer;
+  }
+  .opt-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: none; border: none; border-bottom: 1px solid #f2f2f2;
+    padding: 13px 2px; font-size: 14.5px; cursor: pointer; text-align: left;
+    font-family: inherit; color: var(--ink);
+  }
+  .opt-row .arw { color: var(--sub); font-size: 18px; }
+  .opt-row.as-toggle { cursor: default; gap: 12px; }
+  .share-btn {
+    margin-top: 8px;
+    background: #4150f7; color: #fff; border: none; cursor: pointer;
+    font-size: 15.5px; font-weight: 600; font-family: inherit;
+    padding: 14px; border-radius: 12px; width: 100%;
+  }
+  .share-btn:active { filter: brightness(1.1); }
   .tmpl-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .chip {
     border: 1px solid var(--line); border-radius: 999px;
@@ -458,30 +499,58 @@
 <!-- hidden file input -->
 <input type="file" id="fileInput" accept="image/*" hidden>
 
-<!-- new post modal -->
+<!-- new post modal（本家の2ステップフロー準拠） -->
 <div class="modal" id="composeModal">
-  <div class="modal-head">
-    <button id="composeCancel">キャンセル</button>
-    <span>新規投稿</span>
-    <button class="next" id="composeShare">シェア</button>
+
+  <!-- STEP 1: 画像確認 -->
+  <div class="cm-step" id="cmStep1">
+    <div class="modal-head">
+      <button id="composeCancel">✕</button>
+      <span>新規投稿</span>
+      <button class="next" id="toStep2">次へ →</button>
+    </div>
+    <div class="modal-body">
+      <img id="previewImg" alt="">
+      <button class="recent-row" id="rePick">最近の項目 ›　<span>（タップで選び直す）</span></button>
+    </div>
   </div>
-  <div class="modal-body">
-    <img id="previewImg" alt="">
-    <div class="compose">
-      <textarea id="captionInput" placeholder="キャプションを書く…"></textarea>
-      <div class="tmpl-row" id="tmplRow"></div>
-      <div class="toggle-row">
-        <div>
-          <div class="t-label">AIコメント（写真の中身に触れるコメント）</div>
-          <div class="t-note">ONにするとこの写真がAI（Gemini）に送信されます</div>
+
+  <!-- STEP 2: キャプション・オプション -->
+  <div class="cm-step" id="cmStep2" hidden>
+    <div class="modal-head">
+      <button id="backStep1">‹</button>
+      <span>新規投稿</span>
+      <span style="width:32px"></span>
+    </div>
+    <div class="modal-body">
+      <div class="cap-row">
+        <img id="previewThumb" alt="">
+        <textarea id="captionInput" placeholder="キャプションを追加..."></textarea>
+      </div>
+      <div class="compose">
+        <div class="tmpl-row" id="tmplRow"></div>
+        <div class="pill-row">
+          <button class="pill" data-cs>≡ アンケート</button>
+          <button class="pill" data-cs>💬 お題</button>
         </div>
-        <label class="switch">
-          <input type="checkbox" id="aiToggle" checked>
-          <span class="slider"></span>
-        </label>
+        <button class="opt-row" data-cs><span>♫　音源を追加</span><span class="arw">›</span></button>
+        <button class="opt-row" data-cs><span>👤　タグ付け</span><span class="arw">›</span></button>
+        <button class="opt-row" data-cs><span>📍　場所を追加</span><span class="arw">›</span></button>
+        <div class="opt-row as-toggle">
+          <div>
+            <div class="t-label">✨　AIコメントを追加</div>
+            <div class="t-note">ONにするとこの写真がAI（Gemini）に送信され、写真の中身に触れるコメントが届きます</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="aiToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button class="share-btn" id="composeShare">シェア</button>
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- comments sheet -->
