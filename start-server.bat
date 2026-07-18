@@ -1,15 +1,14 @@
 @echo off
-chcp 932 >nul
 title Shoninyokkyugram local server
 echo ==================================================
-echo  Shoninyokkyugram ローカルサーバー起動
-echo .
-echo  これから貼るAPIキーは「この窓のメモリ」にだけ存在し、
-echo  ファイルにもログにも一切保存されません。
-echo  （窓を閉じればキーも消えます）
+echo  Shoninyokkyugram local server
+echo.
+echo  Your API key will exist ONLY in this window.
+echo  It is never saved to any file or log.
+echo  Close this window and the key is gone.
 echo ==================================================
 echo.
-set /p GEMINI_API_KEY=Gemini APIキーを貼り付けて Enter: 
+set /p GEMINI_API_KEY=Paste Gemini API key + Enter: 
 echo.
 node "%~dp0local-server.js"
 pause
