@@ -70,7 +70,16 @@
         if (!d.objectStoreNames.contains("posts")) d.createObjectStore("posts", { keyPath: "id" });
         if (!d.objectStoreNames.contains("stories")) d.createObjectStore("stories", { keyPath: "id" });
       };
-      req.onsuccess = function () { idb = req.result; resolve(); };
+      req.onblocked = function () {
+        // 旧バージョンのDBを開いている別タブがあるとアップグレードが進めない
+        toast("他のタブでこのアプリが開いています。閉じてからリロードしてください");
+      };
+      req.onsuccess = function () {
+        idb = req.result;
+        // 将来のアップグレードをこのタブがブロックしないように
+        idb.onversionchange = function () { idb.close(); };
+        resolve();
+      };
       req.onerror = function () { reject(req.error); };
     });
   }
@@ -262,6 +271,21 @@
     }
     renderSvProgress();
     svStartTimer();
+    svPreloadNext();
+  }
+  /* 次のストーリー画像を先読みして切替時の待ちをなくす */
+  function svPreloadNext() {
+    var acc = svAccounts[svAcc];
+    var next = null;
+    if (svSlide < acc.stories.length - 1) {
+      next = acc.stories[svSlide + 1];
+    } else if (svAcc < svAccounts.length - 1) {
+      next = svAccounts[svAcc + 1].stories[0];
+    }
+    if (next && !next.url) {
+      var im = new Image();
+      im.src = storyImgUrl(next.seed);
+    }
   }
   function openStory(i) {
     svAccounts = DB.STORY_ACCOUNTS;
@@ -1269,6 +1293,12 @@
   $("svPrev").addEventListener("click", svPrev);
 
   /* ================= init ================= */
+  // まず画面を描く（DB読み込みに失敗・ブロックされてもUIは出る）
+  renderStories();
+  renderNavAvatar();
+  updateBadges();
+  updateProfileStats();
+
   openDb().then(function () {
     return dbAll().then(function (saved) {
       saved.sort(function (a, b) { return b.time - a.time; });
