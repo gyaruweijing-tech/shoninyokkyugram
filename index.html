@@ -54,7 +54,10 @@
     font-size: 19px;
     font-weight: 600;
     letter-spacing: -0.02em;
+    flex: 1;
+    text-align: center;
   }
+  .topbar .icon-btn { flex-shrink: 0; }
   .topbar .icons { display: flex; gap: 22px; }
   .icon-btn {
     background: none; border: none; cursor: pointer; color: var(--ink);
@@ -114,43 +117,199 @@
   }
   .sv-avatar-img { width: 32px; height: 32px; }
 
-  /* ===== 通知タブ ===== */
-  .notif-title { font-weight: 700; font-size: 16px; padding: 14px 16px 6px; }
+  /* ===== 通知タブ（アクティビティ／本家完コピ） ===== */
+  .nt-top {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px 12px;
+  }
+  .nt-back {
+    background: none; border: none; color: var(--ink); cursor: pointer;
+    padding: 0 6px 0 0; display: flex; align-items: center;
+  }
+  .nt-back svg { width: 24px; height: 24px; }
+  .nt-account {
+    display: flex; align-items: center; gap: 5px;
+    font-weight: 700; font-size: 17px;
+  }
+  .nt-chev { width: 15px; height: 15px; }
+  .nt-reddot {
+    width: 7px; height: 7px; border-radius: 50%; background: #ff3040;
+    margin-left: 2px;
+  }
+  /* フォローリクエスト行 */
+  .nt-req {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 16px 14px; cursor: pointer;
+  }
+  .nt-req .avatar { width: 44px; height: 44px; flex-shrink: 0; }
+  .nt-req-body { flex: 1; min-width: 0; }
+  .nt-req-title { font-weight: 600; font-size: 14px; }
+  .nt-req-sub {
+    color: var(--sub); font-size: 13px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .nt-bluedot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .nt-req .nt-arrow { color: var(--sub); font-size: 20px; flex-shrink: 0; }
+  /* セクション見出し */
+  .notif-section { padding: 12px 16px 6px; font-weight: 700; font-size: 15px; }
+  /* 通知1行 */
   .notif-item {
     display: flex; align-items: center; gap: 12px;
-    padding: 10px 16px; font-size: 13.5px;
+    padding: 8px 16px; font-size: 13.5px;
   }
-  .notif-item .avatar { width: 40px; height: 40px; flex-shrink: 0; }
-  .notif-item .nt { flex: 1; min-width: 0; }
+  .nt-avwrap { position: relative; flex-shrink: 0; }
+  .notif-item .avatar { width: 44px; height: 44px; }
+  .nt-heart {
+    position: absolute; right: -2px; bottom: -2px;
+    width: 19px; height: 19px; border-radius: 50%;
+    background: #ff3040; border: 2px solid var(--bg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nt-heart svg { width: 10px; height: 10px; color: #fff; }
+  .notif-item .nt { flex: 1; min-width: 0; line-height: 1.4; }
   .notif-item .nt b { font-weight: 600; }
-  .notif-item .ago { color: var(--sub); font-size: 12px; margin-left: 6px; }
-  .notif-section {
-    padding: 12px 16px 4px; font-weight: 700; font-size: 13.5px;
+  .notif-item .ago { color: var(--sub); font-size: 12.5px; margin-left: 5px; }
+  .nt-thumb {
+    width: 44px; height: 44px; object-fit: cover; flex-shrink: 0; background: #efefef;
   }
+  .nt-follow-btn {
+    flex-shrink: 0; border: none; border-radius: 8px; cursor: pointer;
+    padding: 7px 14px; font-size: 13px; font-weight: 600; font-family: inherit;
+    background: #efefef; color: var(--ink);
+  }
+  .nt-follow-btn.primary { background: var(--blue); color: #fff; }
+  .nt-suggest-ring {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    background: conic-gradient(#f09433, #dc2743, #bc1888, #3897f0, #70c050, #f09433);
+    padding: 3px;
+  }
+  .nt-suggest-ring .avatar { width: 100%; height: 100%; }
 
   /* ===== 自分ストーリー ===== */
-  .sv-viewers {
-    position: absolute; left: 14px; bottom: 16px; z-index: 4;
-    background: rgba(0,0,0,0.55); color: #fff;
-    border: 1px solid rgba(255,255,255,0.35); border-radius: 999px;
-    padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  /* 他人のストーリーの返信欄 */
+  .sv-reply {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
   }
-  .story-edit-body { display: flex; flex-direction: column; }
+  .sv-reply[hidden] { display: none; }
+  .sv-reply-input {
+    flex: 1; background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,.7); border-radius: 999px;
+    padding: 10px 16px; font: inherit; font-size: 14px; outline: none;
+  }
+  .sv-reply-input::placeholder { color: rgba(255,255,255,.8); }
+  .sv-quick {
+    background: none; border: none; cursor: pointer;
+    font-size: 22px; line-height: 1; padding: 0;
+  }
+  .sv-toolbar {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+    display: flex; justify-content: space-around; align-items: flex-end;
+    padding: 14px 6px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(transparent, rgba(0,0,0,0.45));
+  }
+  .sv-toolbar[hidden] { display: none; }
+  .sv-tb {
+    background: none; border: none; color: #fff; cursor: pointer;
+    font-family: inherit; font-size: 10.5px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+  }
+  .sv-tb svg { width: 24px; height: 24px; }
+  .activity-summary {
+    padding: 12px 16px; font-weight: 600; font-size: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  /* ===== ストーリー投稿エディタ（本家UI完コピ） ===== */
+  .se-modal {
+    position: fixed; inset: 0; z-index: 100; background: #000;
+    max-width: 470px; margin: 0 auto; display: none; flex-direction: column;
+  }
+  .se-modal.open { display: flex; }
   .se-stage {
-    position: relative; background: #000;
+    flex: 1; position: relative; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
-    min-height: 46svh; max-height: 60svh; overflow: hidden;
   }
-  #storyPreview { max-width: 100%; max-height: 60svh; object-fit: contain; }
-  .se-overlay-text {
-    position: absolute; left: 0; right: 0; bottom: 12%;
-    text-align: center; color: #fff; font-size: 20px; font-weight: 700;
-    text-shadow: 0 2px 14px rgba(0,0,0,0.65); padding: 0 24px;
+  #storyPreview { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .se-fallback {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #833ab4, #fd1d1d, #fcb045);
+  }
+  .se-close {
+    position: absolute; top: 12px; left: 12px; z-index: 6;
+    background: none; border: none; color: #fff; font-size: 26px; cursor: pointer;
+    line-height: 1; text-shadow: 0 1px 6px rgba(0,0,0,.5);
+  }
+  .se-hdr {
+    position: absolute; top: 54px; left: 14px; z-index: 6;
+    color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .5px;
+    border: 1.5px solid #fff; border-radius: 6px; padding: 1px 5px; opacity: .95;
+    text-shadow: 0 1px 6px rgba(0,0,0,.5);
+  }
+  .se-tools {
+    position: absolute; top: 10px; right: 8px; z-index: 6;
+    display: flex; flex-direction: column; gap: 20px; align-items: center;
+  }
+  .se-tool {
+    background: none; border: none; color: #fff; cursor: pointer;
+    font-size: 23px; line-height: 1; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 1px 8px rgba(0,0,0,.6); font-family: inherit;
+  }
+  .se-tool.aa { font-weight: 700; font-size: 20px; letter-spacing: -1px; }
+  .se-text-layer { position: absolute; inset: 0; z-index: 4; }
+  .se-text-item {
+    position: absolute; transform: translate(-50%, -50%);
+    color: #fff; font-size: 22px; font-weight: 700; text-align: center;
+    text-shadow: 0 2px 14px rgba(0,0,0,.65); padding: 4px 10px;
+    max-width: 84%; white-space: pre-wrap; word-break: break-word;
+    cursor: grab; user-select: none; touch-action: none;
+  }
+  .se-text-item.dragging { cursor: grabbing; opacity: .92; }
+  .se-drag-hint {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+    z-index: 5; color: rgba(255,255,255,.85); font-size: 11px;
+    background: rgba(0,0,0,.4); padding: 4px 12px; border-radius: 999px;
     pointer-events: none;
   }
-  .se-input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px;
-    padding: 12px; font: inherit;
+  .se-textedit {
+    position: absolute; inset: 0; z-index: 8;
+    background: rgba(0,0,0,.55);
+    display: flex; align-items: center; justify-content: center; padding: 0 24px;
+  }
+  .se-textedit[hidden] { display: none; }
+  .se-textedit-input {
+    width: 100%; max-width: 360px; background: none; border: none; outline: none;
+    color: #fff; font-size: 26px; font-weight: 700; text-align: center;
+    text-shadow: 0 2px 14px rgba(0,0,0,.65); font-family: inherit;
+  }
+  .se-textedit-input::placeholder { color: rgba(255,255,255,.65); }
+  .se-textdone {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; color: #fff; font-size: 16px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .se-bottom {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px)); background: #000;
+  }
+  .se-share-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: #262626; color: #fff; border: none; border-radius: 999px;
+    padding: 9px 15px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  .se-share-pill.ghost { background: #1c1c1c; }
+  .se-share-av {
+    width: 22px; height: 22px; border-radius: 50%; display: inline-block;
+    background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  }
+  .cf-star { color: #4ade80; font-size: 15px; }
+  .se-send {
+    margin-left: auto; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    font-size: 22px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
   .viewer-row {
     display: flex; align-items: center; gap: 12px;
@@ -161,6 +320,36 @@
   .viewer-row .vsub { color: var(--sub); font-size: 12px; }
   .viewers-more {
     text-align: center; color: var(--sub); font-size: 13px; padding: 14px;
+  }
+  #followersStat { cursor: pointer; }
+  .viewer-row .vbody { flex: 1; min-width: 0; }
+  .follow-back-btn {
+    background: var(--blue); color: #fff; border: none; border-radius: 8px;
+    padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: inherit; flex-shrink: 0;
+  }
+  .follow-back-btn.following-off { background: #efefef; color: var(--ink); }
+
+  /* ===== ハイライト（プロフィールの丸アイコン列） ===== */
+  .highlights {
+    display: flex; gap: 18px; padding: 4px 16px 14px; overflow-x: auto;
+    border-bottom: 1px solid var(--line);
+  }
+  .highlights::-webkit-scrollbar { display: none; }
+  .hl { text-align: center; flex-shrink: 0; cursor: pointer; }
+  .hl-cover {
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 1px solid var(--line); object-fit: cover; background: #efefef;
+    display: block;
+  }
+  .hl-add {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); line-height: 1;
+  }
+  .hl-label {
+    font-size: 11px; color: var(--ink); margin-top: 5px;
+    max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
 
   /* ===== プロフィール編集 ===== */
@@ -238,6 +427,70 @@
   }
   .post-actions .spacer { flex: 1; }
   .likes-line { padding: 6px 14px 0; font-weight: 600; }
+  /* 本家準拠のアクション行（アイコンの横に件数） */
+  .pa-btn {
+    background: none; border: none; cursor: pointer; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0; font-family: inherit; font-size: 14px; font-weight: 600;
+  }
+  .pa-btn svg { width: 26px; height: 26px; display: block; }
+  .pa-btn.heart-btn.liked svg { fill: var(--red); stroke: var(--red); }
+  .pa-btn.save-btn.saved svg { fill: var(--ink); }
+  .post-actions { gap: 16px; }
+  /* いいねした人の行 */
+  /* コメント欄の絵文字クイックバー */
+  .ci-emoji {
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 14px 2px; border-top: 1px solid var(--line);
+  }
+  .ci-emoji button {
+    background: none; border: none; cursor: pointer;
+    font-size: 22px; line-height: 1; padding: 2px 4px;
+  }
+  /* 投稿の「···」 */
+  .post-more {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    color: var(--ink); font-size: 18px; line-height: 1; padding: 0 2px;
+  }
+  .likers-line {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px 0; font-size: 13.5px;
+  }
+  .likers-line .avatar {
+    width: 20px; height: 20px; font-size: 9px;
+    border: 1.5px solid var(--bg);
+  }
+  .likers-line .avatar + .avatar { margin-left: -12px; }
+  /* 広告投稿 */
+  .ad-head { gap: 10px; }
+  .ad-head-body { flex: 1; min-width: 0; line-height: 1.25; }
+  .ad-label { color: var(--sub); font-size: 12px; }
+  .ad-follow {
+    background: #efefef; border: none; border-radius: 8px; cursor: pointer;
+    padding: 6px 14px; font-size: 13px; font-weight: 600; font-family: inherit;
+    color: var(--ink); flex-shrink: 0;
+  }
+  .ad-follow.done { color: var(--sub); }
+  .ad-more {
+    background: none; border: none; cursor: pointer; color: var(--ink);
+    font-size: 18px; line-height: 1; padding: 0 2px; flex-shrink: 0;
+  }
+  .ad-cta {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; background: #fafafa; border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 13px 14px; font-size: 14px; font-weight: 600;
+    color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  .ad-cta-chev { color: var(--sub); font-size: 18px; }
+  .ad-feedback {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 10px 14px 12px; color: var(--sub); font-size: 12.5px;
+  }
+  .ad-feedback button {
+    background: none; border: none; color: var(--sub);
+    cursor: pointer; font-size: 14px; line-height: 1;
+  }
   .caption-line { padding: 2px 14px; }
   .caption-line .u { font-weight: 600; margin-right: 6px; }
   .view-comments {
@@ -249,8 +502,19 @@
   .heart-btn.liked svg { fill: var(--red); stroke: var(--red); }
 
   /* flying hearts */
+  /* 画像の読み込み中スケルトン（loremflickrが遅いので体感を潰す） */
+  .img-loading {
+    background: linear-gradient(100deg, #eee 30%, #f6f6f6 50%, #eee 70%);
+    background-size: 300% 100%;
+    animation: shimmer 1.2s ease-in-out infinite;
+    color: transparent;
+  }
+  @keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: 0 0; }
+  }
   .fly-heart {
-    position: fixed; font-size: 22px; pointer-events: none; z-index: 60;
+    position: fixed; font-size: 22px; pointer-events: none; z-index: 120;
     animation: flyup 1.4s ease-out forwards;
   }
   @keyframes flyup {
@@ -266,6 +530,7 @@
     display: none;
   }
   .sheet.open { display: block; }
+  #viewersSheet { z-index: 110; } /* ストーリービューア(100)より前面に出す */
   .sheet-body {
     position: absolute; left: 0; right: 0; bottom: 0;
     max-width: 470px; margin: 0 auto;
@@ -302,6 +567,107 @@
     border-radius: 3px; padding: 0 3px; margin-left: 4px; font-weight: 700;
   }
 
+  /* ===== 投稿フロー STEP1: 編集画面（本家完コピ・ダーク） ===== */
+  .cm-edit { background: #101012; color: #fff; }
+  .ce-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+  .ce-close {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,.14); border: none; color: #fff;
+    font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .ce-music {
+    flex: 1; display: flex; align-items: center; gap: 9px; min-width: 0;
+    background: rgba(255,255,255,.13); border-radius: 999px; padding: 5px 6px 5px 5px;
+  }
+  .ce-music-art { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #333; }
+  .ce-music-txt { flex: 1; min-width: 0; line-height: 1.2; }
+  .ce-music-title { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ce-arrow { display: inline-block; transform: rotate(0deg); font-size: 11px; }
+  .ce-music-sub { font-size: 11px; color: rgba(255,255,255,.65); }
+  .ce-music-add {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,.2); border: none; color: #fff;
+    font-size: 15px; cursor: pointer; line-height: 1;
+  }
+  .ce-stage {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    position: relative; padding: 10px 0; min-height: 0;
+  }
+  #previewImg {
+    max-width: 100%; max-height: 100%; object-fit: contain;
+    border-radius: 14px; display: block;
+  }
+  .ce-taptext {
+    position: absolute; left: 0; right: 0; bottom: 14%;
+    text-align: center; color: #fff; font-size: 13px; font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0,0,0,.7); cursor: pointer;
+  }
+  .ce-tools {
+    display: flex; justify-content: center; gap: 8px;
+    padding: 10px 12px 4px; flex-wrap: wrap;
+  }
+  .ce-tool {
+    background: rgba(255,255,255,.1); border: none; color: #fff;
+    border-radius: 12px; padding: 9px 10px; cursor: pointer; font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    font-size: 10.5px; min-width: 62px;
+  }
+  .ce-tool svg { width: 21px; height: 21px; }
+  .ce-next {
+    align-self: flex-end; margin: 10px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    background: #4b53e0; color: #fff; border: none; border-radius: 999px;
+    padding: 12px 22px; font-size: 15px; font-weight: 700; cursor: pointer;
+    font-family: inherit; display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ===== 投稿フロー STEP2: 新規投稿（本家完コピ） ===== */
+  .cn-top { display: flex; align-items: center; padding: 12px 14px; position: relative; }
+  .cn-back {
+    width: 34px; height: 34px; border-radius: 50%; background: #f2f2f2;
+    border: none; color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cn-back svg { width: 20px; height: 20px; }
+  .cn-title {
+    position: absolute; left: 0; right: 0; text-align: center;
+    font-weight: 700; font-size: 16px; pointer-events: none;
+  }
+  .cn-thumbwrap { display: flex; justify-content: center; padding: 6px 16px 14px; }
+  .cn-thumbwrap img {
+    max-width: 62%; max-height: 34svh; object-fit: contain;
+    border-radius: 12px; display: block; background: #efefef;
+  }
+  .cn-caption {
+    width: 100%; border: none; outline: none; resize: none;
+    padding: 0 16px 14px; font: inherit; font-size: 15px; min-height: 46px;
+    font-family: inherit; color: var(--ink);
+  }
+  .cn-music-cards { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 12px; }
+  .cn-music-cards::-webkit-scrollbar { display: none; }
+  .cn-music-card {
+    display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+    background: #f2f2f2; border: none; border-radius: 10px;
+    padding: 6px 12px 6px 6px; cursor: pointer; font-family: inherit;
+    font-size: 12.5px; max-width: 200px;
+  }
+  .cn-music-card img { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+  .cn-music-card span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cn-toggle-body { flex: 1; min-width: 0; }
+  .cn-link { color: var(--blue); }
+  .cn-sep { height: 7px; background: #fafafa; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .cn-subline { display: block; color: var(--sub); font-size: 12px; font-weight: 400; margin-top: 2px; }
+  .cn-plus {
+    background: linear-gradient(90deg, #f09433, #dc2743, #bc1888);
+    -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700;
+  }
+  .cn-dots { font-size: 17px; text-align: center; line-height: 1; }
+  .cn-share-bar { padding: 10px 16px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); }
+  .cn-share {
+    width: 100%; background: #4b53e0; color: #fff; border: none;
+    border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+
   /* ===== new post flow ===== */
   .modal {
     position: fixed; inset: 0; z-index: 50;
@@ -320,37 +686,25 @@
   .modal-head button { background: none; border: none; font-size: 17px; cursor: pointer; }
   .modal-head .next { color: var(--blue); font-weight: 700; font-size: 15px; }
   .modal-body { flex: 1; overflow-y: auto; }
-  #previewImg { width: 100%; max-height: 62svh; object-fit: contain; background: #000; }
-  .recent-row {
-    display: block; width: 100%; text-align: left;
-    background: none; border: none; cursor: pointer;
-    padding: 14px 16px; font-weight: 600; font-size: 14px;
-  }
-  .recent-row span { color: var(--sub); font-weight: 400; font-size: 12px; }
-  .cap-row {
-    display: flex; gap: 12px; padding: 14px 16px;
-    border-bottom: 1px solid var(--line);
-  }
-  .cap-row img {
-    width: 56px; height: 56px; object-fit: cover; flex-shrink: 0;
-    border-radius: 4px; background: #eee;
-  }
-  .cap-row textarea {
-    flex: 1; min-height: 76px; border: none; outline: none;
-    font: inherit; resize: none; padding-top: 2px;
-  }
   .compose { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-  .pill-row { display: flex; gap: 8px; }
+  .pill-row { display: flex; gap: 8px; padding: 0 16px 14px; }
   .pill {
-    border: 1px solid var(--line); border-radius: 10px;
-    background: #fafafa; padding: 8px 14px; font-size: 13px; cursor: pointer;
-  }
-  .opt-row {
-    display: flex; align-items: center; justify-content: space-between;
-    background: none; border: none; border-bottom: 1px solid #f2f2f2;
-    padding: 13px 2px; font-size: 14.5px; cursor: pointer; text-align: left;
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: #fff; padding: 8px 14px; font-size: 13px; cursor: pointer;
     font-family: inherit; color: var(--ink);
   }
+  .pill svg { width: 16px; height: 16px; }
+  .opt-row {
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    background: none; border: none;
+    padding: 13px 16px; font-size: 15px; cursor: pointer; text-align: left;
+    font-family: inherit; color: var(--ink);
+  }
+  .opt-row .oi { width: 24px; height: 24px; flex-shrink: 0; color: var(--ink); }
+  .opt-row .oi svg { width: 100%; height: 100%; display: block; }
+  .opt-row .ol { flex: 1; min-width: 0; }
+  .opt-row .val { color: var(--sub); font-size: 14px; flex-shrink: 0; }
   .opt-row .arw { color: var(--sub); font-size: 18px; }
   .opt-row.as-toggle { cursor: default; gap: 12px; }
   .share-btn {
@@ -360,7 +714,7 @@
     padding: 14px; border-radius: 12px; width: 100%;
   }
   .share-btn:active { filter: brightness(1.1); }
-  .tmpl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tmpl-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 16px 12px; }
   .chip {
     border: 1px solid var(--line); border-radius: 999px;
     background: #fafafa; padding: 6px 12px; font-size: 12px; cursor: pointer;
@@ -396,20 +750,366 @@
   .dm-item .dm-name { font-weight: 600; }
   .dm-item .dm-prev { color: var(--sub); font-size: 13px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .dm-empty { text-align: center; color: var(--sub); padding: 60px 20px; }
-  .dm-detail { padding: 16px; white-space: pre-wrap; }
-  .dm-detail .bubble {
-    background: #efefef; border-radius: 16px; padding: 12px 14px; margin-top: 10px;
-    font-size: 14px;
+  .dm-detail {
+    padding: 16px; display: flex; flex-direction: column; gap: 8px;
+    max-height: 52vh; overflow-y: auto;
+  }
+  .dm-bubble {
+    max-width: 78%; border-radius: 18px; padding: 10px 14px; font-size: 14px;
+    white-space: pre-wrap; word-break: break-word; line-height: 1.45;
+  }
+  .dm-bubble.them { background: #efefef; color: var(--ink); align-self: flex-start; border-bottom-left-radius: 5px; }
+  .dm-bubble.me { background: var(--blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 5px; }
+  .dm-typing { align-self: flex-start; color: var(--sub); font-size: 12px; padding: 2px 8px; }
+  .dm-compose {
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--line);
+  }
+  .dm-reply-input {
+    flex: 1; border: 1px solid var(--line); border-radius: 999px;
+    padding: 9px 14px; font: inherit; outline: none;
+  }
+  .dm-send {
+    background: none; border: none; color: var(--blue); font-weight: 700;
+    font-size: 14px; cursor: pointer; font-family: inherit; flex-shrink: 0; padding: 4px 6px;
   }
 
-  /* ===== profile ===== */
-  .profile-head { padding: 16px; display: flex; align-items: center; gap: 24px; }
-  .profile-head .avatar { width: 80px; height: 80px; font-size: 34px; }
-  .stats { display: flex; gap: 22px; flex: 1; justify-content: space-around; text-align: center; }
+  /* ===== 検索/発見タブ ===== */
+  .ex-searchbar { padding: 8px 12px; background: var(--bg); }
+  .ex-search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: #efefef; border-radius: 10px; padding: 9px 12px;
+    color: var(--sub);
+  }
+  .ex-search-box svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .ex-search-box input {
+    flex: 1; border: none; background: none; outline: none;
+    font: inherit; font-size: 14px; color: var(--ink);
+  }
+  .ex-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  }
+  .ex-cell {
+    position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+    background: #dbdbdb; cursor: pointer;
+  }
+  .ex-cell img.ex-poster, .ex-cell video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .ex-cell video { opacity: 0; transition: opacity .35s; }
+  .ex-cell.ex-playing video { opacity: 1; }
+  .ex-cell.ex-novideo video { display: none; }
+  .ex-views {
+    position: absolute; left: 6px; bottom: 6px; z-index: 2;
+    display: flex; align-items: center; gap: 3px;
+    color: #fff; font-size: 11.5px; font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,.7);
+  }
+  .ex-views svg { width: 13px; height: 13px; }
+  .ex-text {
+    position: absolute; left: 6px; right: 6px; bottom: 24px; z-index: 2;
+    color: #fff; font-size: 12px; font-weight: 700; line-height: 1.25;
+    white-space: pre-line; text-shadow: 0 1px 5px rgba(0,0,0,.8);
+  }
+  .ex-badge {
+    position: absolute; top: 6px; right: 6px; z-index: 2;
+    background: rgba(0,0,0,.6); color: #fff; border-radius: 6px;
+    padding: 2px 6px; font-size: 10px; font-weight: 700;
+  }
+  .ex-cell.ex-mine { outline: 2px solid var(--blue); outline-offset: -2px; }
+  /* 検索サジェスト（有名人あるある） */
+  .ex-suggest { border-bottom: 1px solid var(--line); }
+  .ex-suggest[hidden] { display: none; }
+  .ex-sg-head { padding: 10px 16px 4px; font-size: 12px; color: var(--sub); font-weight: 600; }
+  .ex-sg-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 16px; font-size: 14px; cursor: pointer;
+  }
+  .ex-sg-row .avatar { width: 36px; height: 36px; }
+  .ex-sg-ic {
+    width: 36px; height: 36px; border-radius: 50%; background: #efefef;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .ex-sg-ic svg { width: 17px; height: 17px; color: var(--sub); }
+  .ex-sg-main { font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .ex-sg-sub { color: var(--sub); font-size: 12.5px; }
+
+  /* ===== profile（本家完コピ） ===== */
+  .pf-top {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px 4px;
+  }
+  .pf-account {
+    display: flex; align-items: center; gap: 5px;
+    font-weight: 700; font-size: 17px; cursor: pointer; min-width: 0;
+  }
+  .pf-account #pfAccount {
+    max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pf-lock { width: 14px; height: 14px; flex-shrink: 0; }
+  .pf-top-sp { flex: 1; }
+  .pf-note-wrap { padding: 6px 16px 0; }
+  .pf-note {
+    display: inline-block; background: #efefef; color: var(--ink);
+    border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+  }
+  .profile-head { padding: 8px 16px 12px; display: flex; align-items: center; gap: 22px; }
+  .pf-av { position: relative; flex-shrink: 0; }
+  .profile-head .avatar { width: 86px; height: 86px; font-size: 34px; }
+  .pf-av-plus {
+    position: absolute; right: 0; bottom: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--blue); color: #fff; border: 3px solid var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; line-height: 1; cursor: pointer;
+  }
+  .pf-right { flex: 1; min-width: 0; }
+  .pf-name {
+    font-weight: 700; font-size: 15px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .stats { display: flex; gap: 10px; justify-content: space-between; text-align: center; }
+  .stats > div { flex: 1; cursor: pointer; }
   .stats b { display: block; font-size: 17px; }
   .stats span { font-size: 12.5px; color: var(--ink); }
-  .profile-bio { padding: 0 16px 14px; font-size: 13.5px; }
-  .profile-bio .pname { font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .profile-bio { padding: 0 16px 12px; font-size: 13.5px; }
+  .insight-growth {
+    display: flex; gap: 8px; margin-top: 14px;
+    border-top: 1px solid var(--line); padding-top: 14px;
+  }
+  .insight-growth > div {
+    flex: 1; text-align: center; background: #fafafa; border-radius: 8px; padding: 10px 4px;
+  }
+  .insight-growth span { display: block; color: var(--sub); font-size: 11.5px; }
+  .insight-growth b { font-size: 16px; color: #00a400; }
+  .insight-growth > div:last-child b { color: var(--ink); }
+  .pf-growth { color: #00a400; font-weight: 600; font-size: 12.5px; margin-top: 4px; }
+  .pf-growth[hidden] { display: none; }
+  .stats b.stat-up { color: #00a400; }
+  .pf-banner {
+    margin-top: 8px; background: none; border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px; font-size: 12.5px;
+    color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  /* アクションボタン列 */
+  .pf-actions { display: flex; gap: 6px; padding: 0 16px 14px; }
+  .pf-btn {
+    flex: 1; background: #efefef; border: none; border-radius: 8px;
+    padding: 8px; font-weight: 600; font-size: 13.5px; cursor: pointer;
+    font-family: inherit; color: var(--ink);
+  }
+  .pf-btn-icon { flex: 0 0 44px; display: flex; align-items: center; justify-content: center; }
+  .pf-btn-icon svg { width: 19px; height: 19px; }
+  /* フォローする人を見つけよう */
+  .pf-discover { padding: 0 0 14px; }
+  .pf-discover[hidden] { display: none; }
+  .pf-discover-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px 10px; font-size: 14px;
+  }
+  .pf-seeall {
+    background: none; border: none; color: var(--blue);
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .pf-discover-row {
+    display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 2px;
+  }
+  .pf-discover-row::-webkit-scrollbar { display: none; }
+  .pf-dc {
+    position: relative; flex: 0 0 160px;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 18px 12px 12px; text-align: center;
+  }
+  .pf-dc-x {
+    position: absolute; top: 6px; right: 8px;
+    background: none; border: none; color: var(--sub);
+    font-size: 15px; cursor: pointer; line-height: 1;
+  }
+  .pf-dc .avatar, .pf-dc .pf-dc-img {
+    width: 76px; height: 76px; margin: 0 auto 8px; border-radius: 50%;
+    object-fit: cover; display: block;
+  }
+  .pf-dc-name {
+    font-weight: 600; font-size: 13px; margin-bottom: 2px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pf-dc-sub { color: var(--sub); font-size: 11.5px; margin-bottom: 10px; }
+  .pf-dc-btn {
+    width: 100%; background: var(--blue); color: #fff; border: none;
+    border-radius: 8px; padding: 7px; font-weight: 600; font-size: 13px;
+    cursor: pointer; font-family: inherit;
+  }
+  .pf-dc-btn.done { background: #efefef; color: var(--ink); }
+  /* プロフィールのタブ */
+  .pf-tabs { display: flex; border-top: 1px solid var(--line); }
+  .pf-tab {
+    flex: 1; background: none; border: none; cursor: pointer;
+    padding: 9px 0; color: #b0b0b0; border-bottom: 1.5px solid transparent;
+  }
+  .pf-tab svg { width: 24px; height: 24px; display: block; margin: 0 auto; }
+  .pf-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+  .pf-empty { text-align: center; color: var(--sub); padding: 60px 20px; font-size: 14px; }
+  .pf-empty[hidden] { display: none; }
+  /* リールタブ（2列・再生回数つき） */
+  .pf-reels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  .pf-reels-grid[hidden] { display: none; }
+  .pf-reel-cell { position: relative; aspect-ratio: 9 / 16; overflow: hidden; background: #dbdbdb; cursor: pointer; }
+  .pf-reel-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pf-reel-star {
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.45);
+    color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  /* タグ付けタブ（複数枚アイコン） */
+  #pfTaggedGrid[hidden] { display: none; }
+  .pf-tag-cell { position: relative; aspect-ratio: 1; overflow: hidden; background: #dbdbdb; cursor: pointer; }
+  .pf-tag-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pf-multi {
+    position: absolute; top: 6px; right: 6px; z-index: 2; color: #fff;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.5));
+  }
+  .pf-multi svg { width: 17px; height: 17px; display: block; }
+  .pf-menu-list { padding: 6px 0 10px; }
+  .pf-menu-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 18px; font-size: 15px; cursor: pointer;
+  }
+  .pf-menu-item .ic { font-size: 18px; width: 22px; text-align: center; }
+  .pm-confirm { padding: 6px 18px 12px; }
+  .pm-confirm b { display: block; font-size: 15px; margin-bottom: 6px; }
+  .pm-confirm p { color: var(--sub); font-size: 13px; line-height: 1.5; }
+
+  /* ===== 設定とアクティビティ（本家完コピ） ===== */
+  .st-top {
+    display: flex; align-items: center; padding: 10px 14px;
+    position: relative;
+  }
+  .st-back {
+    background: none; border: none; color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; padding: 0;
+    width: 34px; height: 34px; border-radius: 50%; background: #f2f2f2;
+    justify-content: center;
+  }
+  .st-back svg { width: 20px; height: 20px; }
+  .st-title {
+    position: absolute; left: 0; right: 0; text-align: center;
+    font-weight: 700; font-size: 16px; pointer-events: none;
+  }
+  .st-searchwrap { padding: 4px 14px 12px; }
+  .st-search {
+    display: flex; align-items: center; gap: 8px;
+    background: #efefef; border-radius: 10px; padding: 9px 12px; color: var(--sub);
+  }
+  .st-search svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .st-search input {
+    flex: 1; border: none; background: none; outline: none;
+    font: inherit; font-size: 14px; color: var(--ink);
+  }
+  .st-section { border-top: 7px solid #fafafa; }
+  .st-section:first-child { border-top: none; }
+  .st-section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 8px;
+  }
+  .st-section-title { color: var(--sub); font-size: 13.5px; font-weight: 600; }
+  .st-meta { color: #0866ff; font-size: 12.5px; font-weight: 700; }
+  .st-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 16px; cursor: pointer;
+  }
+  .st-item .st-ic { width: 24px; height: 24px; flex-shrink: 0; color: var(--ink); }
+  .st-item .st-ic svg { width: 100%; height: 100%; }
+  .st-item-body { flex: 1; min-width: 0; }
+  .st-label { font-size: 15px; }
+  .st-sub { color: var(--sub); font-size: 12.5px; line-height: 1.35; margin-top: 2px; }
+  .st-value { color: var(--sub); font-size: 13.5px; flex-shrink: 0; }
+  .st-chev { color: #c7c7c7; font-size: 18px; flex-shrink: 0; line-height: 1; }
+  .st-link { padding: 13px 16px; font-size: 15px; cursor: pointer; }
+  .st-link.blue { color: var(--blue); }
+  .st-link.red { color: #ed4956; }
+
+  /* ===== リールタブ（本家完コピ） ===== */
+  /* 全画面固定にして高さを確定させる（下部ナビは上に浮く＝本家と同じ） */
+  #view-reels.active {
+    display: flex; flex-direction: column;
+    position: fixed; inset: 0; z-index: 25;
+    max-width: 470px; margin: 0 auto;
+    background: #000;
+  }
+  .rl-top {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 6;
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 16px; color: #fff;
+    background: linear-gradient(rgba(0,0,0,.45), transparent);
+  }
+  .rl-top .icon-btn { color: #fff; }
+  .rl-tab {
+    font-size: 16px; font-weight: 700; opacity: .6; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .rl-tab.active { opacity: 1; }
+  .rl-friend-avs { display: flex; }
+  .rl-friend-avs .avatar {
+    width: 20px; height: 20px; font-size: 9px; border: 1.5px solid #000; margin-left: -7px;
+  }
+  .rl-feed {
+    flex: 1; min-height: 0; overflow-y: auto; scroll-snap-type: y mandatory;
+    background: #000; scrollbar-width: none;
+  }
+  .rl-feed::-webkit-scrollbar { display: none; }
+  .rl-item {
+    position: relative; height: 100%; scroll-snap-align: start;
+    background: #000; overflow: hidden;
+  }
+  .rl-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .rl-fallback {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #2b2b3a, #4a2b45, #22323f);
+  }
+  /* 右側の縦アクション列 */
+  .rl-rail {
+    position: absolute; right: 8px; bottom: 92px; z-index: 4;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .rl-act {
+    background: none; border: none; color: #fff; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    text-shadow: 0 1px 6px rgba(0,0,0,.6);
+  }
+  .rl-act svg { width: 27px; height: 27px; }
+  .rl-act.liked svg { fill: #ff3040; stroke: #ff3040; }
+  .rl-disc {
+    width: 30px; height: 30px; border-radius: 7px; overflow: hidden;
+    border: 2px solid #fff; background: #333;
+  }
+  .rl-disc img { width: 100%; height: 100%; object-fit: cover; }
+  /* 左下の情報ブロック */
+  .rl-info {
+    position: absolute; left: 12px; right: 74px; bottom: 78px; z-index: 4;
+    color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.6);
+  }
+  .rl-user { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .rl-ring {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; padding: 2px;
+    background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  }
+  .rl-ring .avatar, .rl-ring img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;
+  }
+  .rl-uname { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 3px; }
+  .rl-follow {
+    background: none; border: 1px solid rgba(255,255,255,.8); color: #fff;
+    border-radius: 8px; padding: 4px 12px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit; flex-shrink: 0;
+  }
+  .rl-follow.done { border-color: rgba(255,255,255,.4); opacity: .8; }
+  .rl-audio, .rl-caption, .rl-followers {
+    font-size: 13px; line-height: 1.4; margin-bottom: 5px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .rl-followers { font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .rl-followers .avatar { width: 18px; height: 18px; font-size: 8px; }
   .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
   .grid3 img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: pointer; }
   .grid-empty { grid-column: 1 / -1; text-align: center; color: var(--sub); padding: 50px 20px; }
@@ -526,11 +1226,12 @@
     background: linear-gradient(160deg, #833ab4, #fd1d1d, #fcb045);
   }
   .sv-text {
-    position: relative; z-index: 2;
-    color: #fff; font-size: 20px; font-weight: 700;
-    text-align: center; padding: 0 30px;
+    position: absolute; left: 50%; top: 88%; z-index: 2;
+    transform: translate(-50%, -50%);
+    color: #fff; font-size: 22px; font-weight: 700;
+    text-align: center; padding: 4px 10px; max-width: 84%;
+    white-space: pre-wrap; word-break: break-word;
     text-shadow: 0 2px 14px rgba(0,0,0,0.65);
-    align-self: flex-end; margin-bottom: 70px; width: 100%;
   }
   .sv-tap {
     position: absolute; top: 0; bottom: 0; width: 50%; z-index: 3;
@@ -545,17 +1246,14 @@
 <div id="phone">
   <!-- top bar -->
   <div class="topbar">
+    <button class="icon-btn" id="newPostTop" aria-label="投稿">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+    </button>
     <span class="logo" id="brandLogo">Shoninyokkyugram</span>
-    <div class="icons">
-      <button class="icon-btn" id="notifBell" aria-label="通知">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-        <span class="badge" id="bellBadge">0</span>
-      </button>
-      <button class="icon-btn" id="dmBtn" aria-label="DM">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-        <span class="badge" id="dmBadge">0</span>
-      </button>
-    </div>
+    <button class="icon-btn" id="notifBell" aria-label="アクティビティ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      <span class="badge" id="bellBadge">0</span>
+    </button>
   </div>
 
   <!-- home view -->
@@ -569,46 +1267,156 @@
     <div id="dmList"></div>
   </div>
 
-  <!-- profile view -->
+  <!-- profile view（本家完コピ） -->
   <div class="view" id="view-profile">
+    <div class="pf-top">
+      <button class="icon-btn" id="pfNewPost" aria-label="投稿">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <span class="pf-account" id="pfAccountBtn">
+        <svg class="pf-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <span id="pfAccount">you</span>
+        <svg class="nt-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </span>
+      <span class="pf-top-sp"></span>
+      <button class="icon-btn" id="pfThreads" aria-label="Threads">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8.5c-1-1.7-2.5-2.4-4.2-2.4-3.2 0-5.3 2.4-5.3 5.9s2 5.9 5.2 5.9c2.6 0 4.2-1.4 4.2-3.1 0-1.6-1.3-2.6-3.3-2.6-1.5 0-2.5.7-2.5 1.7 0 .8.6 1.3 1.5 1.3 1.1 0 1.8-.8 1.8-2.2"/></svg>
+      </button>
+      <button class="icon-btn" id="pfMenu" aria-label="メニュー">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+
+    <div class="pf-note-wrap"><span class="pf-note" id="pfNote">今日の気分…</span></div>
+
     <div class="profile-head">
-      <div id="profileAvatarSlot"></div>
-      <div class="stats">
-        <div><b id="statPosts">0</b><span>投稿</span></div>
-        <div><b id="statFollowers">0</b><span>フォロワー</span></div>
-        <div><b>82</b><span>フォロー中</span></div>
+      <div class="pf-av">
+        <div id="profileAvatarSlot"></div>
+        <span class="pf-av-plus" id="pfAvPlus">＋</span>
+      </div>
+      <div class="pf-right">
+        <div class="pf-name"><span id="profileName">you</span>
+          <svg class="vbadge" viewBox="0 0 24 24" fill="#0095f6"><path d="M12 2l2.4 2.4 3.3-.5.5 3.3L20.6 9 22 12l-1.4 3-2.4 1.8-.5 3.3-3.3-.5L12 22l-2.4-2.4-3.3.5-.5-3.3L3.4 15 2 12l1.4-3 2.4-1.8.5-3.3 3.3.5z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="stats">
+          <div><b id="statPosts">0</b><span>投稿</span></div>
+          <div id="followersStat"><b id="statFollowers">0</b><span>フォロワー</span></div>
+          <div><b id="statFollowing">678</b><span>フォロー中</span></div>
+        </div>
       </div>
     </div>
+
     <div class="profile-bio">
-      <p class="pname"><span id="profileName">you</span>
-        <svg class="vbadge" viewBox="0 0 24 24" fill="#0095f6"><path d="M12 2l2.4 2.4 3.3-.5.5 3.3L20.6 9 22 12l-1.4 3-2.4 1.8-.5 3.3-3.3-.5L12 22l-2.4-2.4-3.3.5-.5-3.3L3.4 15 2 12l1.4-3 2.4-1.8.5-3.3 3.3.5z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </p>
       <p id="profileBio1">インフルエンサー / 何もしてないのに有名</p>
       <p id="profileBio2" style="color:#00376b">お仕事のご依頼はDMへ</p>
+      <p class="pf-growth" id="pfGrowth" hidden></p>
+      <button class="pf-banner" id="pfBanner">＋ バナーを追加</button>
     </div>
-    <button class="edit-profile-btn" id="editProfileBtn">プロフィールを編集</button>
+
+    <div class="pf-actions">
+      <button class="pf-btn" id="editProfileBtn">プロフィールを編集</button>
+      <button class="pf-btn" id="shareProfileBtn">プロフィールをシェア</button>
+      <button class="pf-btn pf-btn-icon" id="discoverBtn" aria-label="フォローする人を見つけよう">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M3 20c0-3.6 3.1-5.6 7-5.6 1.2 0 2.3.2 3.2.6"/><path d="M18 14v6M15 17h6"/></svg>
+      </button>
+    </div>
+
+    <div class="pf-discover" id="pfDiscover" hidden>
+      <div class="pf-discover-head">
+        <b>フォローする人を見つけよう</b>
+        <button class="pf-seeall" id="pfSeeAll">すべて見る</button>
+      </div>
+      <div class="pf-discover-row" id="pfDiscoverRow"></div>
+    </div>
+
+    <div class="highlights" id="highlights"></div>
+
+    <div class="pf-tabs">
+      <button class="pf-tab active" data-pftab="grid" aria-label="投稿">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+      </button>
+      <button class="pf-tab" data-pftab="reels" aria-label="リール">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M8.5 3l3 5.5M14.5 3l3 5.5"/><path d="m10.5 12.5 4.5 2.7-4.5 2.7z" fill="currentColor"/></svg>
+      </button>
+      <button class="pf-tab" data-pftab="tagged" aria-label="タグ付け">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6.5h18v13H3z"/><circle cx="12" cy="11" r="2.4"/><path d="M8 17c1-1.8 2.4-2.6 4-2.6s3 .8 4 2.6"/></svg>
+      </button>
+    </div>
+
     <div class="grid3" id="profileGrid"></div>
+    <div class="pf-reels-grid" id="pfReelsGrid" hidden></div>
+    <div class="grid3" id="pfTaggedGrid" hidden></div>
   </div>
 
-  <!-- notifications view -->
+  <!-- search / explore view -->
+  <div class="view" id="view-search">
+    <div class="ex-searchbar">
+      <div class="ex-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" id="exSearchInput" placeholder="検索" maxlength="40">
+      </div>
+    </div>
+    <div class="ex-suggest" id="exSuggest" hidden></div>
+    <div class="ex-grid" id="exploreGrid"></div>
+  </div>
+
+  <!-- settings view（設定とアクティビティ／本家完コピ） -->
+  <div class="view" id="view-settings">
+    <div class="st-top">
+      <button class="st-back" id="settingsBack" aria-label="戻る">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <span class="st-title">設定とアクティビティ</span>
+    </div>
+    <div class="st-searchwrap">
+      <div class="st-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" id="settingsSearch" placeholder="検索" maxlength="40">
+      </div>
+    </div>
+    <div id="settingsList"></div>
+  </div>
+
+  <!-- reels view（本家完コピ） -->
+  <div class="view" id="view-reels">
+    <div class="rl-top">
+      <button class="icon-btn" id="rlNewPost" aria-label="投稿">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <span class="rl-tab active" id="rlTabReels">リール</span>
+      <span class="rl-tab" id="rlTabFriends">友達 <span class="rl-friend-avs" id="rlFriendAvs"></span></span>
+    </div>
+    <div class="rl-feed" id="reelsFeed"></div>
+  </div>
+
+  <!-- notifications view（アクティビティ／本家完コピ） -->
   <div class="view" id="view-notif">
-    <div class="notif-title">アクティビティ</div>
+    <div class="nt-top">
+      <button class="nt-back" id="notifBack" aria-label="戻る">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <span class="nt-account"><span id="notifAccount">you</span>
+        <svg class="nt-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </span>
+      <span class="nt-reddot"></span>
+    </div>
     <div id="notifList"></div>
   </div>
 
-  <!-- bottom nav -->
+  <!-- bottom nav（本家クラシック配置: ホーム・リール・DM・検索・プロフィール） -->
   <div class="bottomnav">
     <button class="icon-btn" data-nav="home" aria-label="ホーム">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
     </button>
-    <button class="icon-btn" data-nav="search" aria-label="検索">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    </button>
-    <button class="icon-btn" data-nav="new" aria-label="投稿">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
-    </button>
     <button class="icon-btn" data-nav="reels" aria-label="リール">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M8.5 3l3 5.5M14.5 3l3 5.5"/><path d="m10.5 12.5 4.5 2.7-4.5 2.7z" fill="currentColor"/></svg>
+    </button>
+    <button class="icon-btn" data-nav="dm" aria-label="メッセージ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+      <span class="badge" id="dmBadge">0</span>
+    </button>
+    <button class="icon-btn" data-nav="search" aria-label="検索">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     </button>
     <div class="avatar" data-nav="profile" id="navAvatar" style="background:#d63c7b">Y</div>
   </div>
@@ -622,52 +1430,129 @@
 <!-- new post modal（本家の2ステップフロー準拠） -->
 <div class="modal" id="composeModal">
 
-  <!-- STEP 1: 画像確認 -->
-  <div class="cm-step" id="cmStep1">
-    <div class="modal-head">
-      <button id="composeCancel">✕</button>
-      <span>新規投稿</span>
-      <button class="next" id="toStep2">次へ →</button>
+  <!-- STEP 1: 編集画面（本家完コピ・ダーク） -->
+  <div class="cm-step cm-edit" id="cmStep1">
+    <div class="ce-top">
+      <button class="ce-close" id="composeCancel" aria-label="閉じる">✕</button>
+      <div class="ce-music" id="ceMusic">
+        <img class="ce-music-art" id="ceMusicArt" alt="">
+        <div class="ce-music-txt">
+          <div class="ce-music-title"><span class="ce-arrow">↗</span> <span id="ceMusicTitle"></span></div>
+          <div class="ce-music-sub" id="ceMusicSub"></div>
+        </div>
+        <button class="ce-music-add" data-cs aria-label="音源を追加">＋</button>
+      </div>
     </div>
-    <div class="modal-body">
+    <div class="ce-stage">
       <img id="previewImg" alt="">
-      <button class="recent-row" id="rePick">最近の項目 ›　<span>（タップで選び直す）</span></button>
+      <div class="ce-taptext" data-cs>タップしてテキストを追加</div>
     </div>
+    <div class="ce-tools">
+      <button class="ce-tool" data-cs>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="16.5" cy="16" r="2.6"/></svg>
+        <span>音声</span>
+      </button>
+      <button class="ce-tool" data-cs>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18 7.5 6 12 18"/><path d="M4.5 14.5h6"/><path d="M14 12.5a2.8 2.8 0 0 1 5.5.8V18"/><path d="M19.5 15.5c-3 0-4.6.8-4.6 2.2 0 .9.8 1.6 2 1.6 1.5 0 2.6-1 2.6-2.4"/></svg>
+        <span>テキスト</span>
+      </button>
+      <button class="ce-tool" data-cs>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="8" y="3" width="13" height="13" rx="2.5"/><rect x="3" y="8" width="13" height="13" rx="2.5"/></svg>
+        <span>オーバーレイ</span>
+      </button>
+      <button class="ce-tool" data-cs>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="9" r="6"/><circle cx="15" cy="15" r="6"/></svg>
+        <span>フィルター</span>
+      </button>
+      <button class="ce-tool" data-cs>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>
+        <span>編集</span>
+      </button>
+    </div>
+    <button class="ce-next" id="toStep2">次へ <span>→</span></button>
   </div>
 
-  <!-- STEP 2: キャプション・オプション -->
+  <!-- STEP 2: 新規投稿（本家完コピ） -->
   <div class="cm-step" id="cmStep2" hidden>
-    <div class="modal-head">
-      <button id="backStep1">‹</button>
-      <span>新規投稿</span>
-      <span style="width:32px"></span>
+    <div class="cn-top">
+      <button class="cn-back" id="backStep1" aria-label="戻る">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <span class="cn-title">新規投稿</span>
     </div>
     <div class="modal-body">
-      <div class="cap-row">
-        <img id="previewThumb" alt="">
-        <textarea id="captionInput" placeholder="キャプションを追加..."></textarea>
+      <div class="cn-thumbwrap"><img id="previewThumb" alt=""></div>
+      <textarea id="captionInput" class="cn-caption" placeholder="キャプションを追加..."></textarea>
+      <div class="tmpl-row" id="tmplRow"></div>
+      <div class="pill-row">
+        <button class="pill" data-cs>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h11M4 12h16M4 17h7"/></svg>アンケート
+        </button>
+        <button class="pill" data-cs>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 20l1.1-5.3A8.5 8.5 0 1 1 21 11.5z"/></svg>お題
+        </button>
       </div>
-      <div class="compose">
-        <div class="tmpl-row" id="tmplRow"></div>
-        <div class="pill-row">
-          <button class="pill" data-cs>≡ アンケート</button>
-          <button class="pill" data-cs>💬 お題</button>
+
+      <button class="opt-row" data-cs>
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="16.5" cy="16" r="2.6"/></svg></span>
+        <span class="ol">音源を追加</span><span class="arw">›</span>
+      </button>
+      <div class="cn-music-cards" id="cnMusicCards"></div>
+
+      <button class="opt-row" data-cs>
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="12" cy="11" r="2.4"/><path d="M8 17c1-1.8 2.4-2.6 4-2.6s3 .8 4 2.6" fill="none"/></svg></span>
+        <span class="ol">タグ付け</span><span class="arw">›</span>
+      </button>
+      <button class="opt-row" data-cs>
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+        <span class="ol">場所を追加</span><span class="arw">›</span>
+      </button>
+
+      <div class="opt-row as-toggle">
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="4" width="15" height="15" rx="3"/><path d="m19 3 .8 1.9L21.7 6l-1.9.8L19 8.7l-.8-1.9L16.3 6l1.9-.8z" fill="currentColor" stroke="none"/></svg></span>
+        <div class="cn-toggle-body">
+          <div class="t-label">AIラベルを追加</div>
+          <div class="t-note">AIで作成された特定のリアルなコンテンツにはラベルを付ける必要があります。<span class="cn-link">詳しくはこちら</span></div>
         </div>
-        <button class="opt-row" data-cs><span>♫　音源を追加</span><span class="arw">›</span></button>
-        <button class="opt-row" data-cs><span>👤　タグ付け</span><span class="arw">›</span></button>
-        <button class="opt-row" data-cs><span>📍　場所を追加</span><span class="arw">›</span></button>
-        <div class="opt-row as-toggle">
-          <div>
-            <div class="t-label">✨　AIコメントを追加</div>
-            <div class="t-note">ONにするとこの写真がAI（Gemini）に送信され、写真の中身に触れるコメントが届きます</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="aiToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-        <button class="share-btn" id="composeShare">シェア</button>
+        <label class="switch">
+          <input type="checkbox" id="aiLabelToggle">
+          <span class="slider"></span>
+        </label>
       </div>
+
+      <div class="opt-row as-toggle">
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 3 1.6 3.9L17.5 8.5l-3.9 1.6L12 14l-1.6-3.9L6.5 8.5l3.9-1.6z" fill="currentColor" stroke="none"/><path d="M18 14.5 18.9 17l2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z" fill="currentColor" stroke="none"/></svg></span>
+        <div class="cn-toggle-body">
+          <div class="t-label">AIコメントを追加</div>
+          <div class="t-note">ONにするとこの写真がAI（Gemini）に送信され、写真の中身に触れるコメントが届きます</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="aiToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="cn-sep"></div>
+      <button class="opt-row" data-cs>
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7" stroke-linecap="round"/></svg></span>
+        <span class="ol">プロフィールのみに投稿<span class="cn-subline">試す <b class="cn-plus">Instagram Plus</b></span></span><span class="arw">›</span>
+      </button>
+      <button class="opt-row" data-cs>
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg></span>
+        <span class="ol">オーディエンス</span><span class="val">フォロワー</span><span class="arw">›</span>
+      </button>
+      <button class="opt-row" data-cs>
+        <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9.5 14.5 15 9"/><path d="M10.5 9H15v4.5"/></svg></span>
+        <span class="ol">次でもシェア...</span><span class="val">オフ</span><span class="arw">›</span>
+      </button>
+      <div class="cn-sep"></div>
+      <button class="opt-row" data-cs>
+        <span class="oi cn-dots">···</span>
+        <span class="ol">その他のオプション</span><span class="arw">›</span>
+      </button>
+    </div>
+    <div class="cn-share-bar">
+      <button class="cn-share" id="composeShare">シェア</button>
     </div>
   </div>
 
@@ -678,6 +1563,7 @@
   <div class="sheet-body">
     <div class="sheet-title">コメント<button class="sheet-close" id="sheetClose">✕</button></div>
     <div class="comments-list" id="commentsList"></div>
+    <div class="ci-emoji" id="ciEmoji"></div>
     <div class="ci-row">
       <div id="ciAvatarSlot"></div>
       <input type="text" id="commentInput" placeholder="コメントを追加…" maxlength="200">
@@ -694,11 +1580,15 @@
   </div>
 </div>
 
-<!-- dm detail sheet -->
+<!-- dm detail sheet（会話UI） -->
 <div class="sheet" id="dmSheet">
   <div class="sheet-body">
     <div class="sheet-title" id="dmSheetTitle">メッセージ<button class="sheet-close" id="dmSheetClose">✕</button></div>
     <div class="dm-detail" id="dmDetail"></div>
+    <div class="dm-compose">
+      <input type="text" id="dmReplyInput" class="dm-reply-input" placeholder="メッセージを入力…" maxlength="200">
+      <button class="dm-send" id="dmSend">送信</button>
+    </div>
   </div>
 </div>
 
@@ -717,25 +1607,52 @@
     <div class="sv-text" id="svText"></div>
     <button class="sv-tap left" id="svPrev" aria-label="前へ"></button>
     <button class="sv-tap right" id="svNext" aria-label="次へ"></button>
-    <button class="sv-viewers" id="svViewersChip" hidden>👁 <span id="svViewersCount">0</span>人が既読</button>
+  </div>
+  <!-- 他人のストーリーの返信欄（本家準拠） -->
+  <div class="sv-reply" id="svReply" hidden>
+    <input type="text" id="svReplyInput" class="sv-reply-input" placeholder="メッセージを送信" maxlength="120">
+    <button class="sv-quick" data-sv-react="❤️">❤️</button>
+    <button class="sv-quick" data-sv-react="🙌">🙌</button>
+    <button class="sv-quick" data-sv-react="🔥">🔥</button>
+  </div>
+
+  <!-- 自分ストーリーの下部ツールバー（本家準拠） -->
+  <div class="sv-toolbar" id="svToolbar" hidden>
+    <button class="sv-tb" id="svActBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6.2 8-6.2s8 2.2 8 6.2"/></svg><span>アクティビティ</span></button>
+    <button class="sv-tb" data-sv-cs><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7h2.4l.4-2.8h-2.8V9.4c0-.8.2-1.4 1.4-1.4h1.5V5.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2H8.2V14h2.7v7z"/></svg><span>Facebook</span></button>
+    <button class="sv-tb" data-sv-cs><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg><span>シェア</span></button>
+    <button class="sv-tb" data-sv-cs><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 10a2.4 2.4 0 0 0-3.5-1 2.4 2.4 0 0 0-3.5 1c-.5 1 0 2.2 1 3l2.5 2.3 2.5-2.3c1-.8 1.5-2 1-3z"/></svg><span>ハイライト</span></button>
+    <button class="sv-tb" data-sv-cs><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>その他</span></button>
   </div>
 </div>
 
-<!-- own story editor -->
-<div class="modal" id="storyEditor">
-  <div class="modal-head">
-    <button id="storyEditCancel">✕</button>
-    <span>新規ストーリーズ</span>
-    <button class="next" id="storyShare">シェア</button>
+<!-- own story editor（本家UI完コピ） -->
+<div class="se-modal" id="storyEditor">
+  <div class="se-stage" id="seStage">
+    <div class="se-fallback"></div>
+    <img id="storyPreview" alt="">
+    <div class="se-text-layer" id="seTextLayer"></div>
+    <button class="se-close" id="storyEditCancel" aria-label="閉じる">✕</button>
+    <div class="se-hdr">HDR</div>
+    <div class="se-tools">
+      <button class="se-tool aa" id="seToolText" aria-label="テキスト">Aa</button>
+      <button class="se-tool" data-se-cs aria-label="スタンプ">☺</button>
+      <button class="se-tool" data-se-cs aria-label="音楽">♫</button>
+      <button class="se-tool" data-se-cs aria-label="エフェクト">✦</button>
+      <button class="se-tool" data-se-cs aria-label="サウンド">🔊</button>
+      <button class="se-tool" data-se-cs aria-label="その他">⌄</button>
+    </div>
+    <div class="se-drag-hint" id="seDragHint" hidden>ドラッグで文字を移動できます</div>
+    <!-- Aaをタップした時のテキスト入力モード -->
+    <div class="se-textedit" id="seTextEdit" hidden>
+      <button class="se-textdone" id="seTextDone">完了</button>
+      <input type="text" id="storyTextInput" class="se-textedit-input" placeholder="テキストを入力" maxlength="60">
+    </div>
   </div>
-  <div class="modal-body story-edit-body">
-    <div class="se-stage">
-      <img id="storyPreview" alt="">
-      <div class="se-overlay-text" id="seOverlayPreview"></div>
-    </div>
-    <div class="compose">
-      <input type="text" id="storyTextInput" class="se-input" placeholder="テキストを追加…（例: 今日もいい日✨）" maxlength="60">
-    </div>
+  <div class="se-bottom">
+    <button class="se-share-pill" id="storyShare"><span class="se-share-av"></span>ストーリーズ</button>
+    <button class="se-share-pill ghost" id="seCloseFriends"><span class="cf-star">★</span>親しい友達</button>
+    <button class="se-send" id="seSend" aria-label="送信">→</button>
   </div>
 </div>
 
@@ -744,6 +1661,30 @@
   <div class="sheet-body">
     <div class="sheet-title"><span id="viewersTitle">閲覧者</span><button class="sheet-close" id="viewersClose">✕</button></div>
     <div class="comments-list" id="viewersList"></div>
+  </div>
+</div>
+
+<!-- followers sheet -->
+<div class="sheet" id="followersSheet">
+  <div class="sheet-body">
+    <div class="sheet-title"><span id="followersTitle">フォロワー</span><button class="sheet-close" id="followersClose">✕</button></div>
+    <div class="comments-list" id="followersList"></div>
+  </div>
+</div>
+
+<!-- post ··· menu sheet -->
+<div class="sheet" id="postMenuSheet">
+  <div class="sheet-body">
+    <div class="sheet-title">オプション<button class="sheet-close" id="postMenuClose">✕</button></div>
+    <div class="pf-menu-list" id="postMenuList"></div>
+  </div>
+</div>
+
+<!-- profile hamburger menu sheet -->
+<div class="sheet" id="pfMenuSheet">
+  <div class="sheet-body">
+    <div class="sheet-title">メニュー<button class="sheet-close" id="pfMenuClose">✕</button></div>
+    <div class="pf-menu-list" id="pfMenuList"></div>
   </div>
 </div>
 
@@ -756,6 +1697,8 @@
         <div id="peAvatarSlot"></div>
         <button class="pe-avatar-change" id="peAvatarChange">写真を変更</button>
       </div>
+      <label class="pe-label">名前</label>
+      <input type="text" id="peName" class="pe-input" maxlength="30" placeholder="表示名（例: ハル）">
       <label class="pe-label">ユーザーネーム</label>
       <input type="text" id="peHandle" class="pe-input" maxlength="30">
       <label class="pe-label">自己紹介</label>
@@ -790,6 +1733,9 @@
 <script src="js/stories.js"></script>
 <script src="js/feed.js"></script>
 <script src="js/views.js"></script>
+<script src="js/explore.js"></script>
+<script src="js/reels.js"></script>
+<script src="js/settings.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

@@ -49,6 +49,40 @@ function avatarEl(name, cls) {
 }
 var VBADGE = '<svg class="vbadge" viewBox="0 0 24 24" fill="#0095f6"><path d="M12 2l2.4 2.4 3.3-.5.5 3.3L20.6 9 22 12l-1.4 3-2.4 1.8-.5 3.3-3.3-.5L12 22l-2.4-2.4-3.3.5-.5-3.3L3.4 15 2 12l1.4-3 2.4-1.8.5-3.3 3.3.5z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+/* ================= 画像URL =================
+   picsumはキーワードを解釈しない（seedは「同じ文字なら同じ画像」なだけ）ため、
+   テキストと中身がちぐはぐになっていた。キーワードで引ける loremflickr に変更。
+   lock を付けると毎回同じ画像が返るのでフィードの表示が安定する。
+   読み込めなかった時は picsum に自動フォールバック（imgFallback）。 */
+var kwLockSeq = 0;
+function kwImg(keywords, w, h, lock) {
+  var l = (lock == null) ? (++kwLockSeq) : lock;
+  return "https://loremflickr.com/" + w + "/" + h + "/" + encodeURIComponent(keywords) + "?lock=" + l;
+}
+/* 失敗時に picsum へ切り替える（一度だけ）＋読み込み完了でフェードイン */
+function imgFallback(img, seed, w, h) {
+  img.classList.add("img-loading");
+  img.decoding = "async";
+  var done = function () { img.classList.remove("img-loading"); };
+  if (img.complete && img.naturalWidth) done();
+  img.addEventListener("load", done);
+  img.addEventListener("error", function onErr() {
+    img.removeEventListener("error", onErr);
+    img.src = "https://picsum.photos/seed/" + seed + "/" + w + "/" + h;
+  });
+  return img;
+}
+/* 画像の先読み（loremflickrは1.5〜2秒かかるので、裏で温めておく）
+   一度読めばブラウザキャッシュに載るので、実際に画面を開いた時は即表示になる */
+var prewarmed = {};
+function prewarm(urls) {
+  urls.forEach(function (u, i) {
+    if (!u || prewarmed[u]) return;
+    prewarmed[u] = 1;
+    setTimeout(function () { var im = new Image(); im.src = u; }, i * 120);
+  });
+}
+
 function timeAgo(ts) {
   var s = Math.floor((Date.now() - ts) / 1000);
   if (s < 60) return "たった今";
@@ -115,7 +149,28 @@ var LS = {
   },
   set: function (k, v) { try { localStorage.setItem("kuso." + k, JSON.stringify(v)); } catch (e) {} }
 };
-var followers = LS.get("followers", 184000 + rand(0, 9000));
+var FOLLOWERS_START = 48000 + rand(0, 4000); // 初期フォロワー（増えた実感が出るよう5万前後から）
+var followers = LS.get("followers", FOLLOWERS_START);
+
+/* ================= フォロワーの増減を一箇所で管理 =================
+   （LSの定義より後に置くこと。前に置くと読み込み時に落ちる） */
+var growthLog = LS.get("growthLog", []); // [{t:時刻, g:増加数}]
+function addFollowers(gain, msg) {
+  if (gain <= 0) return;
+  followers += gain;
+  LS.set("followers", followers);
+  growthLog.push({ t: Date.now(), g: gain });
+  if (growthLog.length > 300) growthLog = growthLog.slice(-300);
+  LS.set("growthLog", growthLog);
+  updateProfileStats();
+  toast((msg ? msg + " " : "") + "フォロワー +" + fmt(gain) + "人 🎉");
+}
+function growthWithin(ms) {
+  var from = Date.now() - ms;
+  var sum = 0;
+  growthLog.forEach(function (r) { if (r.t >= from) sum += r.g; });
+  return sum;
+}
 var dms = LS.get("dms", []);
 var unreadDms = LS.get("unreadDms", 0);
 var unreadNotifs = LS.get("unreadNotifs", 0);
@@ -125,6 +180,7 @@ var myStories = []; // {id, blob, url, text, time, base, rate, cap}
 /* プロフィール（編集可能） */
 var profile = LS.get("profile", {
   handle: "watashi__official",
+  name: "", // 表示名（未設定ならユーザーネームを使う）
   bio1: "インフルエンサー / 何もしてないのに有名",
   bio2: "お仕事のご依頼はDMへ",
   avatar: null // dataURL（端末内のみ）
