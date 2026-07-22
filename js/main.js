@@ -30,6 +30,8 @@ $("exSearchInput").addEventListener("blur", function () {
 $("notifBell").addEventListener("click", function () { switchView("notif"); });
 $("notifBack").addEventListener("click", function () { switchView("home"); });
 $("settingsBack").addEventListener("click", function () { switchView("profile"); });
+$("savedBack").addEventListener("click", function () { switchView(savedReturnView); });
+$("savedAdd").addEventListener("click", function () { toast("新しいコレクションは Coming soon 🚧"); });
 $("settingsSearch").addEventListener("input", function () { renderSettings(this.value); });
 /* 投稿詳細 */
 $("pdBack").addEventListener("click", detailBack);

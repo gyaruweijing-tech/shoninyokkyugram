@@ -87,8 +87,9 @@ function stItemEl(item) {
   row.appendChild(ch);
 
   row.addEventListener("click", function () {
-    // 「アクティビティ」だけは実際の画面へ飛ばす
+    // 実装済みの項目は実際の画面へ飛ばす
     if (item.label === "アクティビティ") switchView("notif");
+    else if (item.label === "保存済み") openSaved("settings");
     else toast(item.label + "は Coming soon 🚧");
   });
   return row;

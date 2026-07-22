@@ -1,0 +1,8 @@
+# 参照スクショは端末内のみ（プライバシー保護）。
+# リポジトリをprivate化したら `git add -f auto-dev/refs/xxx.png` で明示追加する。
+# 本番Routineはクラウドでcloneするため、その時点でスクショのコミットが必要。
+*.png
+*.jpg
+*.jpeg
+*.webp
+!README.md

@@ -412,6 +412,41 @@ window.KUSO_DB = (function () {
     { seed: "pf-tag-9", kw: "cafe,window",     multi: false }
   ];
 
+  /* ===== 保存済み（コレクション／リール／投稿） ===== */
+  var SAVED_COLLECTIONS = [
+    { name: "音源", music: true, priv: true, covers: ["album,cover,music", "vinyl,record,music"] },
+    { name: "これら美味そうだな", priv: true, seed: "sav-c-tenshin", kw: "tenshinhan,egg,rice" },
+    { name: "電子レンジでいける", priv: true, seed: "sav-c-toast", kw: "frenchtoast,breakfast" }
+  ];
+  var SAVED_REELS = [
+    { seed: "sav-r-1", kw: "dance,studio",       views: 49000 },
+    { seed: "sav-r-2", kw: "playground,indoor",  views: 1440000 },
+    { seed: "sav-r-3", kw: "cooking,dinner",     views: 6070000 },
+    { seed: "sav-r-4", kw: "railway,mountain",   views: 3590000 },
+    { seed: "sav-r-5", kw: "frenchtoast,nutella", views: 4420000 },
+    { seed: "sav-r-6", kw: "mapo,tofu,udon",     views: 2520000 },
+    { seed: "sav-r-7", kw: "tandoori,chicken",   views: 358000 },
+    { seed: "sav-r-8", kw: "avocado,salad",      views: 315000 },
+    { seed: "sav-r-9", kw: "risotto,egg",        views: 146000 }
+  ];
+  var SAVED_POSTS = [
+    { seed: "sav-p-1",  kw: "dance,studio",     multi: false },
+    { seed: "sav-p-2",  kw: "taco,rice,cheese", multi: true },
+    { seed: "sav-p-3",  kw: "pasta,tunamayo",   multi: true },
+    { seed: "sav-p-4",  kw: "hamburg,pork",     multi: true },
+    { seed: "sav-p-5",  kw: "hayashi,rice",     multi: true },
+    { seed: "sav-p-6",  kw: "carrot,pork",      multi: false },
+    { seed: "sav-p-7",  kw: "gratin,cheese",    multi: false },
+    { seed: "sav-p-8",  kw: "porkbeans,stew",   multi: true },
+    { seed: "sav-p-9",  kw: "dance,arena",      multi: true },
+    { seed: "sav-p-10", kw: "somen,noodle",     multi: false },
+    { seed: "sav-p-11", kw: "tomato,mince",     multi: true },
+    { seed: "sav-p-12", kw: "kimbap,cheese",    multi: false }
+  ];
+
+  /* ※ PROFILE_MENU（ハンバーガーのボトムシート）は 2026-07-20 に廃止。
+     ☰ は設定ページへ直行するようになったので、このデータは使わない。 */
+
   /* 検索サジェスト（有名人あるある。{name}はプロフィール名に置換） */
   var SEARCH_SUFFIXES = [
     "彼女", "年収", "自宅", "wiki", "事務所", "本名", "身長", "すっぴん", "実家 金持ち",
@@ -622,6 +657,9 @@ window.KUSO_DB = (function () {
     AD_POSTS: AD_POSTS,
     PROFILE_REELS: PROFILE_REELS,
     PROFILE_TAGGED: PROFILE_TAGGED,
+    SAVED_COLLECTIONS: SAVED_COLLECTIONS,
+    SAVED_REELS: SAVED_REELS,
+    SAVED_POSTS: SAVED_POSTS,
     STORY_ACCOUNTS: STORY_ACCOUNTS,
     BUZZ_TEXTS: BUZZ_TEXTS,
     REPLY_FAN: REPLY_FAN,

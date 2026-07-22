@@ -622,14 +622,15 @@ function followerRow(name, verified, sub) {
 
 /* ================= views ================= */
 function switchView(name) {
-  ["home", "dm", "profile", "notif", "search", "reels", "settings", "user", "detail"].forEach(function (v) {
+  ["home", "dm", "profile", "notif", "search", "reels", "settings", "user", "detail", "saved"].forEach(function (v) {
     $("view-" + v).classList.toggle("active", v === name);
   });
   // 専用ヘッダーを持つ画面ではグローバルヘッダーを隠す
   document.querySelector(".topbar").hidden =
     (name === "profile" || name === "notif" || name === "reels" ||
-     name === "settings" || name === "user" || name === "detail");
+     name === "settings" || name === "user" || name === "detail" || name === "saved");
   if (name === "settings") { renderSettings(""); $("settingsSearch").value = ""; }
+  if (name === "saved") { renderSaved(); }
   if (name !== "search") exPauseAll(); // 検索タブを離れたら動画を止める
   if (name !== "reels") rlPauseAll();  // リールタブを離れたら動画を止める
   if (name === "reels") { renderReels(); }
