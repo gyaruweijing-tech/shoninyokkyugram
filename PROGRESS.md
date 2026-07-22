@@ -211,6 +211,24 @@
 - 変更ファイル: comments-db.js（MUSIC_SUGGESTIONS/MUSIC_TOP）, index.html（compose STEP1/STEP2 markup全面刷新・ce-*/cn-* CSS・opt-row/pill刷新・旧#previewImg/recent-row/cap-row削除・pm-confirm）, js/core.js（FOLLOWERS_START）, js/feed.js（confirmDeletePost/deletePost/renderMusicCards・POST_MENU）, js/views.js（confirmResetAccount/resetAccount・メニューに追加）, js/main.js（rePick撤去・ceMusic結線・renderMusicCards初期化）
 - **未実装(意図的)**: STEP1の各ツール（音声/テキスト/オーバーレイ/フィルター/編集）は張りぼて。ストーリー編集には既にドラッグ可能なテキスト機能があるので、投稿にも付けるなら流用可能
 
+## 2026-07-22 — 自動開発スケジューラ設計＋機能棚卸し＋保存済み画面（S02）
+### 🤖 auto-dev（1時間ごとRoutineで1機能ずつ自動開発する仕組み）
+- **狙い**: Claude利用制限を避けつつ、本家完コピ機能を無人で毎時1個ずつ進める。本人が完コピ用スクショを用意→Routine（cron・新セッション毎時発火）がリポジトリをcloneして手順書どおり1機能実装→push、を回す想定
+- **`auto-dev/` を新設**:
+  - `ROADMAP.md`: 未実装機能60+件を棚卸し・構造化（設定サブ画面45／プロフィールメニュー8／フィード6／リール5／検索2／ストーリー2）。各機能にID・スクショ名・優先度(P1-P3)・状態(todo/done/blocked)を割当
+  - `PLAYBOOK.md`: Routineが毎回従う手順（refsにスクショがある最上位todoを1件選ぶ→手本確認→既存パターン踏襲→実装→検証→ROADMAP更新→DEV_LOG追記→auto-dev-workへpush。1Run=1機能）
+  - `DEV_LOG.md`: 各Runの記録テンプレ
+  - `refs/`: 完コピ用スクショ置き場。画像は`.gitignore`でgit管理外（プライバシー・private化後に`add -f`）
+- **設計判断**: cron部分はこの環境のRoutine機能が既製品なので実現性は高い。品質担保のため自動commitは`auto-dev-work`に溜め、mainへは朝に本人がレビューして手動反映
+### 🔖 保存済み画面（S02・手動テストRun）
+- 設定「保存済み」／プロフィール☰「保存済み」から遷移する専用画面を実装（本人スクショ5枚で完コピ）
+- **6タブ**: すべて（コレクション行＋「すべて見る」＋リール投稿3列グリッド＋「管理」）／コレクション（大カード2列・音源は2×2カバー＋♫）／シリーズ（空状態）／リール（3列・再生数）／投稿（3列・複数枚アイコン）／オーディオ（空状態）。データは`comments-db.SAVED_COLLECTIONS/REELS/POSTS`
+- **既存バグ修正**: `.topbar[hidden]{display:none}`が無く、設定/通知/リール画面でもグローバルのロゴバーが消えていなかった（`.topbar{display:flex}`が勝つ）。JSは隠す意図だったので1行追加。home/dm/検索は`hidden`が立たないので無影響
+- 変更ファイル: comments-db.js（SAVED_*データ）, index.html（sav-* CSS・#view-saved markup・.topbar[hidden]・scriptタグ）, js/saved.js（新規）, js/views.js（switchViewにsaved追加・プロフィールメニュー結線）, js/settings.js（設定行結線）, js/main.js（savedBack/savedAdd結線）
+- 検証済み（Playwright, JS駆動）: 6タブ全描画・view有効・topbar非表示・JSエラーゼロ（画像のtunnelエラーはサンドボックス外部通信不可によるもので実機では読み込まれる）
+- **未実装(意図的)**: 各コレクション/セルのタップ先は Coming soon トースト（次段階）。ROADMAPのS02を done に更新
+- **auto-devの学び**: 複雑画面は参照スクショが複数枚必要（今回5枚）。ROADMAPのスクショ名は代表1枚＋`-<サブ>.png`補助運用に修正
+
 ## 次にやる（本人合意済み・**お手本スクショ待ちで着手保留**）
 > 方針: しばらく「本家インスタの完コピ」に集中する。**本人がお手本スクショを渡してから実装開始**すること（完コピが要件）。以下4つは着手順の合意済みリスト。
 
