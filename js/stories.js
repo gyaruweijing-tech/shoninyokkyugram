@@ -120,6 +120,13 @@ function svShow() {
     slot.appendChild(icon);
   }
   $("svName").textContent = acc.user;
+  // アカウント名タップでその人のプロフィールへ（ビューアは閉じる）
+  $("svName").style.cursor = "pointer";
+  $("svName").onclick = function () {
+    if (acc.own) { closeStory(); switchView("profile"); return; }
+    closeStory();
+    openUserProfile(acc.user);
+  };
   $("svTime").textContent = st.timeStr || (rand(1, 12) + "時間前");
   var svt = $("svText");
   svt.textContent = st.text || "";

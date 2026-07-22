@@ -38,6 +38,10 @@
   }
 
   /* ===== top bar ===== */
+  /* display:flex は hidden属性(display:none)を打ち消してしまうので、明示的に消す。
+     これが無いと専用ヘッダーを持つ画面（プロフィール/設定/他人/投稿詳細など）で
+     ヘッダーが二重に出る */
+  .topbar[hidden] { display: none; }
   .topbar {
     position: sticky;
     top: 0;
@@ -452,6 +456,7 @@
     margin-left: auto; background: none; border: none; cursor: pointer;
     color: var(--ink); font-size: 18px; line-height: 1; padding: 0 2px;
   }
+  .likers-line { cursor: pointer; }
   .likers-line {
     display: flex; align-items: center; gap: 6px;
     padding: 8px 14px 0; font-size: 13.5px;
@@ -979,10 +984,137 @@
   .pm-confirm b { display: block; font-size: 15px; margin-bottom: 6px; }
   .pm-confirm p { color: var(--sub); font-size: 13px; line-height: 1.5; }
 
+  /* ===== 投稿詳細（本家完コピ） ===== */
+  .pd-top {
+    display: flex; align-items: center; gap: 12px; padding: 8px 14px;
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .pd-back {
+    background: rgba(0, 0, 0, .06); border: none; color: var(--ink); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; padding: 0;
+  }
+  .pd-back svg { width: 20px; height: 20px; }
+  .pd-title { flex: 1; text-align: center; line-height: 1.2; min-width: 0; }
+  .pd-title b { display: block; font-size: 15px; }
+  .pd-title span { display: block; color: var(--sub); font-size: 12px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pd-follow {
+    background: none; border: none; color: var(--blue); cursor: pointer;
+    font: inherit; font-size: 14px; font-weight: 700; flex-shrink: 0; padding: 0;
+  }
+  .pd-follow.following { color: var(--sub); }
+  .pd-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
+  .pd-head .avatar { width: 34px; height: 34px; font-size: 14px; }
+  .pd-head-body { flex: 1; min-width: 0; line-height: 1.25; }
+  .pd-user { font-weight: 600; font-size: 14px; cursor: pointer; }
+  .pd-date { color: var(--sub); font-size: 12px; }
+  .pd-more { background: none; border: none; color: var(--ink); cursor: pointer; padding: 0; }
+  .pd-more svg { width: 20px; height: 20px; }
+  .pd-media { position: relative; background: #000; }
+  .pd-media img { width: 100%; display: block; }
+  /* カルーセル（横スクロール＋スナップ。指を離すと必ず1枚にピタッと止まる） */
+  .pd-track {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .pd-track::-webkit-scrollbar { display: none; }
+  .pd-track img { width: 100%; flex: 0 0 100%; scroll-snap-align: center; }
+  /* 右上の「1/5」カウンター（スワイプ中だけ濃くなる） */
+  .pd-count {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    background: rgba(0,0,0,.6); color: #fff; font-size: 12px; font-weight: 600;
+    padding: 3px 9px; border-radius: 999px; transition: opacity .3s;
+  }
+  /* 複数枚のドット */
+  .pd-dots { display: flex; justify-content: center; gap: 4px; padding: 10px 0 2px; }
+  .pd-dot { width: 6px; height: 6px; border-radius: 50%; background: #c7c7c7; }
+  .pd-dot.on { background: var(--blue); }
+  .pd-caption { padding: 4px 14px 2px; font-size: 14px; line-height: 1.5; }
+  .pd-caption b { font-weight: 600; margin-right: 5px; cursor: pointer; }
+  .pd-more-text { color: var(--sub); cursor: pointer; }
+  .pd-reply {
+    padding: 6px 14px 18px; color: var(--sub); font-size: 13px; cursor: pointer;
+  }
+
+  /* ===== 他人のプロフィール（本家完コピ） ===== */
+  .up-top {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .up-back, .up-more {
+    background: none; border: none; color: var(--ink); cursor: pointer;
+    padding: 0; display: flex; align-items: center;
+  }
+  .up-back svg { width: 24px; height: 24px; }
+  .up-more svg { width: 22px; height: 22px; }
+  .up-handle { flex: 1; font-weight: 700; font-size: 17px; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* ストーリー未読の人はリングが付く（自分のプロフィールと同じ見た目） */
+  .up-av { position: relative; width: 86px; height: 86px; flex-shrink: 0; }
+  .up-av .avatar { width: 86px; height: 86px; font-size: 30px; }
+  .up-av.ring::before {
+    content: ""; position: absolute; inset: -3px; border-radius: 50%;
+    background: conic-gradient(#f9ce34, #ee2a7b, #6228d7, #f9ce34); z-index: 0;
+  }
+  .up-av.ring .avatar { position: relative; z-index: 1; box-shadow: 0 0 0 3px #fff; }
+  .up-bio-line { font-size: 14px; line-height: 1.45; }
+  .up-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: #00376b; font-size: 14px; font-weight: 600; margin-top: 3px; cursor: pointer;
+  }
+  .up-link svg { width: 15px; height: 15px; flex-shrink: 0; transform: rotate(-45deg); }
+  .up-threads {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
+    border: 1px solid var(--line); border-radius: 20px; padding: 4px 10px;
+    font-size: 12.5px; color: var(--sub); cursor: pointer;
+  }
+  .up-threads svg { width: 13px; height: 13px; }
+  /* 「フォロワー: ◯◯、◯◯」＋重ねアバター */
+  .up-mutual {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px 0; font-size: 12.5px; color: var(--sub);
+  }
+  .up-mutual-avs { display: flex; flex-shrink: 0; }
+  .up-mutual-avs .avatar {
+    width: 20px; height: 20px; font-size: 9px;
+    box-shadow: 0 0 0 2px #fff; margin-right: -7px;
+  }
+  .up-mutual b { color: var(--ink); font-weight: 600; }
+  .up-actions { display: flex; gap: 6px; padding: 12px 16px 4px; }
+  .up-btn {
+    flex: 1; border: none; border-radius: 9px; padding: 8px 0;
+    background: #efefef; color: var(--ink);
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .up-btn.up-follow { background: var(--blue); color: #fff; flex: 1.6; }
+  .up-btn.up-follow.following { background: #efefef; color: var(--ink); flex: 1.6; }
+  .up-btn-icon { flex: 0 0 42px; display: flex; align-items: center; justify-content: center; }
+  .up-btn-icon svg { width: 19px; height: 19px; }
+  /* グリッドのバッジ（ピン留め・リール・複数枚・閲覧済み） */
+  .up-cell { position: relative; }
+  .up-badge {
+    position: absolute; top: 6px; right: 6px; color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .5)); pointer-events: none;
+  }
+  .up-badge svg { width: 18px; height: 18px; display: block; }
+  .up-seen {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    color: #fff; font-size: 12px; font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .6); pointer-events: none;
+  }
+
   /* ===== 設定とアクティビティ（本家完コピ） ===== */
+  /* 本家はスクロールしても上部バーが残り、項目が半透明の下に潜っていく */
   .st-top {
     display: flex; align-items: center; padding: 10px 14px;
-    position: relative;
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(255, 255, 255, .82);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   }
   .st-back {
     background: none; border: none; color: var(--ink); cursor: pointer;
@@ -1360,6 +1492,75 @@
     <div class="ex-grid" id="exploreGrid"></div>
   </div>
 
+  <!-- 投稿詳細（本家スクショ準拠）
+       検索セル・プロフィールのグリッド・通知のサムネから開く。中身は detail.js が組み立てる -->
+  <div class="view" id="view-detail">
+    <div class="pd-top">
+      <button class="pd-back" id="pdBack" aria-label="戻る">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <div class="pd-title">
+        <b>投稿</b>
+        <span id="pdTitleUser"></span>
+      </div>
+      <button class="pd-follow" id="pdFollow">フォロー</button>
+    </div>
+    <div id="pdBody"></div>
+  </div>
+
+  <!-- 他人のプロフィール（本家スクショ2枚を完コピ）
+       中身は user.js が openUserProfile(handle) で毎回組み立てる -->
+  <div class="view" id="view-user">
+    <div class="up-top">
+      <button class="up-back" id="upBack" aria-label="戻る">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <span class="up-handle" id="upHandle"></span>
+      <button class="up-more" id="upMore" aria-label="その他">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+      </button>
+    </div>
+
+    <div class="profile-head">
+      <div class="up-av" id="upAvatar"></div>
+      <div class="pf-right">
+        <div class="pf-name" id="upName"></div>
+        <div class="stats" id="upStats"></div>
+      </div>
+    </div>
+
+    <div class="profile-bio" id="upBio"></div>
+    <div class="up-mutual" id="upMutual" hidden></div>
+
+    <div class="up-actions">
+      <button class="up-btn up-follow" id="upFollowBtn">フォロー</button>
+      <button class="up-btn" id="upMessageBtn">メッセージ</button>
+      <button class="up-btn up-btn-icon" id="upSuggestBtn" aria-label="おすすめ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M3 20c0-3.6 3.1-5.6 7-5.6 1.2 0 2.3.2 3.2.6"/><path d="M18 14v6M15 17h6"/></svg>
+      </button>
+    </div>
+
+    <div class="highlights" id="upHighlights" hidden></div>
+
+    <div class="pf-tabs" id="upTabs">
+      <button class="pf-tab active" data-uptab="grid" aria-label="投稿">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+      </button>
+      <button class="pf-tab" data-uptab="reels" aria-label="リール">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M8.5 3l3 5.5M14.5 3l3 5.5"/><path d="m10.5 12.5 4.5 2.7-4.5 2.7z" fill="currentColor"/></svg>
+      </button>
+      <button class="pf-tab" data-uptab="repost" aria-label="リポスト">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.5 20.5 6 17 9.5"/><path d="M3.5 12.5v-2A4.5 4.5 0 0 1 8 6h12.5"/><path d="M7 21.5 3.5 18 7 14.5"/><path d="M20.5 11.5v2a4.5 4.5 0 0 1-4.5 4.5H3.5"/></svg>
+      </button>
+      <button class="pf-tab" data-uptab="tagged" aria-label="タグ付け">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6.5h18v13H3z"/><circle cx="12" cy="11" r="2.4"/><path d="M8 17c1-1.8 2.4-2.6 4-2.6s3 .8 4 2.6"/></svg>
+      </button>
+    </div>
+
+    <div class="grid3" id="upGrid"></div>
+    <div class="pf-empty" id="upEmpty" hidden></div>
+  </div>
+
   <!-- settings view（設定とアクティビティ／本家完コピ） -->
   <div class="view" id="view-settings">
     <div class="st-top">
@@ -1680,10 +1881,10 @@
   </div>
 </div>
 
-<!-- profile hamburger menu sheet -->
+<!-- アカウントのリセット確認ダイアログ（☰メニューは本家に無いので廃止済み） -->
 <div class="sheet" id="pfMenuSheet">
   <div class="sheet-body">
-    <div class="sheet-title">メニュー<button class="sheet-close" id="pfMenuClose">✕</button></div>
+    <div class="sheet-title">アカウントのリセット<button class="sheet-close" id="pfMenuClose">✕</button></div>
     <div class="pf-menu-list" id="pfMenuList"></div>
   </div>
 </div>
@@ -1736,6 +1937,8 @@
 <script src="js/explore.js"></script>
 <script src="js/reels.js"></script>
 <script src="js/settings.js"></script>
+<script src="js/user.js"></script>
+<script src="js/detail.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

@@ -122,6 +122,17 @@ function renderSettings(filter) {
     items.forEach(function (it) { wrap.appendChild(stItemEl(it)); });
     list.appendChild(wrap);
   });
+  /* 本家には無いが、☰メニューを廃止したのでリセットの入口をここに置いた（検索時は隠す） */
+  if (!q) {
+    var rs = document.createElement("div");
+    rs.className = "st-section";
+    var rl = document.createElement("div");
+    rl.className = "st-link red";
+    rl.textContent = "アカウントをリセット";
+    rl.addEventListener("click", confirmResetAccount);
+    rs.appendChild(rl);
+    list.appendChild(rs);
+  }
   if (!list.children.length) {
     var none = document.createElement("div");
     none.className = "pf-empty";

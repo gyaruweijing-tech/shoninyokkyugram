@@ -111,7 +111,14 @@ function notifThumb() {
   img.className = "nt-thumb";
   img.alt = "";
   img.loading = "lazy";
-  img.src = posts.length ? pick(posts).url : "https://picsum.photos/seed/nt" + rand(1, 999) + "/88/88";
+  var mine = posts.length ? pick(posts) : null;
+  var seed = "nt" + rand(1, 999);
+  img.src = mine ? mine.url : "https://picsum.photos/seed/" + seed + "/88/88";
+  img.style.cursor = "pointer";
+  img.addEventListener("click", function (e) {
+    e.stopPropagation();  // 行のクリックより優先
+    openPostDetail(mine ? { post: mine } : { seed: seed, kw: "photo" });
+  });
   return img;
 }
 function ntFollowBtn(primary) {
@@ -136,14 +143,14 @@ function notifItem(kind, agoText) {
     var acct = pick(DB.SUGGEST_ACCOUNTS);
     var ring = document.createElement("div");
     ring.className = "nt-suggest-ring";
-    ring.appendChild(avatarEl(acct));
+    ring.appendChild(linkToUser(avatarEl(acct), acct));
     item.appendChild(ring);
     var sn = document.createElement("div");
     sn.className = "nt";
     sn.appendChild(document.createTextNode("フォローのおすすめ: "));
     var sb = document.createElement("b");
     sb.textContent = acct;
-    sn.appendChild(sb);
+    sn.appendChild(linkToUser(sb, acct));
     var ssub = document.createElement("div");
     ssub.className = "nt-req-sub";
     ssub.textContent = agoText + "・共通の友達" + rand(2, 14) + "人";
@@ -156,7 +163,7 @@ function notifItem(kind, agoText) {
   var liked = (kind === "storyLike" || kind === "postLike");
   var avw = document.createElement("div");
   avw.className = "nt-avwrap";
-  avw.appendChild(avatarEl(nm));
+  avw.appendChild(linkToUser(avatarEl(nm), nm));
   if (liked) {
     var h = document.createElement("div");
     h.className = "nt-heart";
@@ -169,14 +176,14 @@ function notifItem(kind, agoText) {
   nt.className = "nt";
   var b = document.createElement("b");
   b.textContent = nm;
-  nt.appendChild(b);
+  nt.appendChild(linkToUser(b, nm));
 
   if (kind === "storyLike") {
     var nm2 = makeName(pick(DB.PERSONAS[weightedPersona()].names));
     nt.appendChild(document.createTextNode("、"));
     var b2 = document.createElement("b");
     b2.textContent = nm2;
-    nt.appendChild(b2);
+    nt.appendChild(linkToUser(b2, nm2));
     nt.appendChild(document.createTextNode(" 他" + rand(8, 90) + "人があなたのストーリーズに「いいね！」しました。"));
   } else if (kind === "postLike") {
     nt.appendChild(document.createTextNode(" 他" + rand(12, 3200) + "人があなたの投稿に「いいね！」しました。"));
@@ -455,11 +462,14 @@ function renderProfileTagged() {
   });
 }
 
-/* ===== ハンバーガーメニュー ===== */
-/* アカウントを最初の状態に戻す（投稿・ストーリー・DM・フォロワーを全部リセット） */
+/* ===== アカウントのリセット =====
+   本家の☰は設定ページへ直行するのでメニューシートは廃止したが、
+   このシートだけは「取り消せない操作の確認ダイアログ」として残している。
+   入口は設定ページ最下部の赤いリンク（renderSettings）。 */
 function confirmResetAccount() {
   var list = $("pfMenuList");
   list.innerHTML = "";
+  $("pfMenuSheet").classList.add("open");
   var msg = document.createElement("div");
   msg.className = "pm-confirm";
   msg.innerHTML = "<b>アカウントをリセットしますか？</b><p>投稿・ストーリー・DM・通知が全て消え、フォロワーが初期値（約5万人）に戻ります。元に戻せません。</p>";
@@ -502,31 +512,6 @@ function resetAccount() {
   toast("アカウントをリセットしました（フォロワー " + fmt(followers) + "人）");
 }
 
-function openProfileMenu() {
-  var list = $("pfMenuList");
-  list.innerHTML = "";
-  DB.PROFILE_MENU.forEach(function (m) {
-    var row = document.createElement("div");
-    row.className = "pf-menu-item";
-    var ic = document.createElement("span");
-    ic.className = "ic";
-    ic.textContent = m.ic;
-    row.appendChild(ic);
-    row.appendChild(document.createTextNode(m.label));
-    row.addEventListener("click", function () {
-      if (m.label === "設定とアクティビティ") { $("pfMenuSheet").classList.remove("open"); switchView("settings"); }
-      else toast(m.label + "は Coming soon 🚧");
-    });
-    list.appendChild(row);
-  });
-  var reset = document.createElement("div");
-  reset.className = "pf-menu-item";
-  reset.style.color = "#ed4956";
-  reset.innerHTML = '<span class="ic">🧹</span>アカウントをリセット';
-  reset.addEventListener("click", confirmResetAccount);
-  list.appendChild(reset);
-  $("pfMenuSheet").classList.add("open");
-}
 
 function renderProfileGrid() {
   var g = $("profileGrid");
@@ -538,11 +523,7 @@ function renderProfileGrid() {
   posts.forEach(function (p) {
     var img = document.createElement("img");
     img.src = p.url;
-    img.addEventListener("click", function () {
-      switchView("home");
-      var el = document.querySelector('[data-id="' + p.id + '"]');
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    });
+    img.addEventListener("click", function () { openPostDetail({ post: p }); });
     g.appendChild(img);
   });
 }
@@ -569,21 +550,64 @@ function openFollowersSheet() {
   list.appendChild(more);
   $("followersSheet").classList.add("open");
 }
-function followerRow(name, verified) {
+/* ================= いいねした人一覧 =================
+   フォロワー一覧と同じシートを使い回す（タイトルと中身だけ差し替え）。
+   「自分を好きな人が延々スクロールできる」のがこのアプリの本体なので、
+   VIP（認証済み）→ 常連ペルソナ → 残りは件数、の順で見せる。 */
+var LIKER_SUBS = [
+  "この投稿に「いいね！」しました",
+  "あなたの投稿をいつも見ています",
+  "あなたをフォローしています",
+  "この投稿を保存しました",
+  "友達がフォローしています",
+  "通知をオンにしています"
+];
+function openLikersSheet(post) {
+  var n = post.likesShown != null ? post.likesShown : (post._likes != null ? post._likes : 0);
+  $("followersTitle").textContent = "「いいね！」" + fmt(n) + "件";
+  var list = $("followersList");
+  list.innerHTML = "";
+  var seen = {};
+  function add(nm, verified) {
+    if (seen[nm]) return false;
+    seen[nm] = 1;
+    list.appendChild(followerRow(nm, verified, pick(LIKER_SUBS)));
+    return true;
+  }
+  var shown = 0;
+  // フィードの「いいね！: ◯◯、他」に出ている本人を必ず先頭に置く（表示の食い違いを防ぐ）
+  if (post.likerTop && add(post.likerTop, false)) shown++;
+  DB.FOLLOWER_VIPS.forEach(function (nm) { if (shown < n && add(nm, true)) shown++; });
+  var guard = 0;
+  while (shown < n && shown < 100 && guard++ < 400) {
+    var pk = weightedPersona();
+    if (add(makeName(pick(DB.PERSONAS[pk].names)), DB.PERSONAS[pk].verified === true)) shown++;
+  }
+  if (n > shown) {
+    var more = document.createElement("div");
+    more.className = "viewers-more";
+    more.textContent = "他 " + fmt(n - shown) + "人が「いいね！」しました";
+    list.appendChild(more);
+  }
+  $("followersSheet").classList.add("open");
+}
+
+function followerRow(name, verified, sub) {
   var row = document.createElement("div");
   row.className = "viewer-row";
-  row.appendChild(avatarEl(name));
+  row.appendChild(linkToUser(avatarEl(name), name));
   var b = document.createElement("div");
   b.className = "vbody";
   var vn = document.createElement("div");
   vn.className = "vn";
   vn.textContent = name;
   if (verified) vn.insertAdjacentHTML("beforeend", VBADGE);
-  var sub = document.createElement("div");
-  sub.className = "vsub";
-  sub.textContent = pick(["あなたをフォローしています", "フォローバックしました", "知り合いかも", "あなたの投稿をよく見ています"]);
+  linkToUser(vn, name);
+  var subEl = document.createElement("div");
+  subEl.className = "vsub";
+  subEl.textContent = sub || pick(["あなたをフォローしています", "フォローバックしました", "知り合いかも", "あなたの投稿をよく見ています"]);
   b.appendChild(vn);
-  b.appendChild(sub);
+  b.appendChild(subEl);
   row.appendChild(b);
   var btn = document.createElement("button");
   btn.className = "follow-back-btn";
@@ -598,12 +622,13 @@ function followerRow(name, verified) {
 
 /* ================= views ================= */
 function switchView(name) {
-  ["home", "dm", "profile", "notif", "search", "reels", "settings"].forEach(function (v) {
+  ["home", "dm", "profile", "notif", "search", "reels", "settings", "user", "detail"].forEach(function (v) {
     $("view-" + v).classList.toggle("active", v === name);
   });
   // 専用ヘッダーを持つ画面ではグローバルヘッダーを隠す
   document.querySelector(".topbar").hidden =
-    (name === "profile" || name === "notif" || name === "reels" || name === "settings");
+    (name === "profile" || name === "notif" || name === "reels" ||
+     name === "settings" || name === "user" || name === "detail");
   if (name === "settings") { renderSettings(""); $("settingsSearch").value = ""; }
   if (name !== "search") exPauseAll(); // 検索タブを離れたら動画を止める
   if (name !== "reels") rlPauseAll();  // リールタブを離れたら動画を止める

@@ -99,13 +99,14 @@ function fanEruption(c, post, repliesWrap) {
 function commentEl(c, post) {
   var div = document.createElement("div");
   div.className = "comment" + (c.ai ? " ai-comment" : "");
-  div.appendChild(c.mine ? myAvatarEl() : avatarEl(c.name));
+  div.appendChild(linkToUser(c.mine ? myAvatarEl() : avatarEl(c.name), c.name));
   var body = document.createElement("div");
   body.className = "body";
   var head = document.createElement("span");
   head.className = "cu";
   head.textContent = c.name;
   if (c.verified || c.mine) head.insertAdjacentHTML("beforeend", VBADGE);
+  linkToUser(head, c.name);
   var txt = document.createElement("div");
   txt.className = "ct";
   txt.textContent = c.text;
@@ -226,17 +227,21 @@ function bumpCount(btn, startN, msg) {
     toast(msg);
   });
 }
-/* いいねした人の行（「いいね！: ◯◯、他」＋小さいアバター2つ） */
+/* いいねした人の行（「いいね！: ◯◯、他」＋小さいアバター2つ）
+   タップでいいねした人の一覧が開く。代表の名前は投稿ごとに固定しないと
+   再描画のたびに別人になってしまうので post に覚えさせる。 */
 function likersLine(post) {
   var wrap = document.createElement("div");
   wrap.className = "likers-line";
-  var n1 = makeName(pick(DB.PERSONAS[weightedPersona()].names));
+  if (!post.likerTop) post.likerTop = makeName(pick(DB.PERSONAS[weightedPersona()].names));
+  var n1 = post.likerTop;
   var a1 = avatarEl(n1), a2 = avatarEl(n1 + "b");
   wrap.appendChild(a1);
   wrap.appendChild(a2);
   var t = document.createElement("span");
   t.textContent = "いいね！: " + n1 + "、他";
   wrap.appendChild(t);
+  wrap.addEventListener("click", function () { openLikersSheet(post); });
   return wrap;
 }
 /* 保存数・シェア数（いいね数からそれっぽい比率で算出。既存投稿にも後付けする） */
@@ -271,12 +276,12 @@ function renderPost(post, prepend) {
 
   var head = document.createElement("div");
   head.className = "post-head";
-  head.appendChild(myAvatarEl());
+  head.appendChild(linkToUser(myAvatarEl(), HANDLE));
   var un = document.createElement("span");
   un.className = "uname";
   un.textContent = HANDLE;
   un.insertAdjacentHTML("beforeend", VBADGE);
-  head.appendChild(un);
+  head.appendChild(linkToUser(un, HANDLE));
   var moreBtn = document.createElement("button");
   moreBtn.className = "post-more";
   moreBtn.textContent = "···";
@@ -563,12 +568,12 @@ function renderSeedPost(sp, ref) {
 
   var head = document.createElement("div");
   head.className = "post-head";
-  head.appendChild(seedAvatar(sp));
+  head.appendChild(linkToUser(seedAvatar(sp), sp.user));
   var un = document.createElement("span");
   un.className = "uname";
   un.textContent = sp.user;
   if (sp.verified) un.insertAdjacentHTML("beforeend", VBADGE);
-  head.appendChild(un);
+  head.appendChild(linkToUser(un, sp.user));
   el.appendChild(head);
 
   var wrap = document.createElement("div");
@@ -648,12 +653,13 @@ function renderAdPost(ad) {
 
   var head = document.createElement("div");
   head.className = "post-head ad-head";
-  head.appendChild(seedAvatar(ad));
+  head.appendChild(linkToUser(seedAvatar(ad), ad.user));
   var hb = document.createElement("div");
   hb.className = "ad-head-body";
   var un = document.createElement("div");
   un.className = "uname";
   un.textContent = ad.user;
+  linkToUser(un, ad.user);
   var lb = document.createElement("div");
   lb.className = "ad-label";
   lb.textContent = "広告";

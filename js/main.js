@@ -31,6 +31,26 @@ $("notifBell").addEventListener("click", function () { switchView("notif"); });
 $("notifBack").addEventListener("click", function () { switchView("home"); });
 $("settingsBack").addEventListener("click", function () { switchView("profile"); });
 $("settingsSearch").addEventListener("input", function () { renderSettings(this.value); });
+/* 投稿詳細 */
+$("pdBack").addEventListener("click", detailBack);
+$("pdFollow").addEventListener("click", function () {
+  if (!pdCurrent) return;
+  var i = upFollowing.indexOf(pdCurrent.user);
+  if (i >= 0) upFollowing.splice(i, 1); else upFollowing.push(pdCurrent.user);
+  LS.set("upFollowing", upFollowing);
+  var on = i < 0;
+  this.textContent = on ? "フォロー中" : "フォロー";
+  this.classList.toggle("following", on);
+});
+/* 他人のプロフィール */
+$("upBack").addEventListener("click", userBack);
+$("upFollowBtn").addEventListener("click", toggleUserFollow);
+$("upMessageBtn").addEventListener("click", function () { if (upCurrent) openUserDm(upCurrent); });
+$("upSuggestBtn").addEventListener("click", function () { if (upCurrent) openSimilarSheet(upCurrent); });
+$("upMore").addEventListener("click", function () { if (upCurrent) openUserMenu(upCurrent); });
+[].forEach.call(document.querySelectorAll("#upTabs .pf-tab"), function (b) {
+  b.addEventListener("click", function () { setUserTab(b.dataset.uptab); });
+});
 $("fileInput").addEventListener("change", function () {
   if (this.files && this.files[0]) openCompose(this.files[0]);
   this.value = "";
@@ -79,7 +99,8 @@ $("followersSheet").addEventListener("click", function (e) { if (e.target === th
 $("editProfileBtn").addEventListener("click", openProfileEdit);
 /* プロフィール（本家UI） */
 $("pfNewPost").addEventListener("click", function () { $("fileInput").click(); });
-$("pfMenu").addEventListener("click", openProfileMenu);
+/* 本家の☰は中間メニューを挟まず設定ページへ直行する */
+$("pfMenu").addEventListener("click", function () { switchView("settings"); });
 $("pfMenuClose").addEventListener("click", function () { $("pfMenuSheet").classList.remove("open"); });
 $("pfMenuSheet").addEventListener("click", function (e) { if (e.target === this) this.classList.remove("open"); });
 $("discoverBtn").addEventListener("click", toggleDiscover);

@@ -88,13 +88,13 @@ function rlItem(item, idx) {
   userRow.className = "rl-user";
   var ring = document.createElement("div");
   ring.className = "rl-ring";
-  ring.appendChild(avatarEl(item.user));
+  ring.appendChild(linkToUser(avatarEl(item.user), item.user));
   userRow.appendChild(ring);
   var un = document.createElement("span");
   un.className = "rl-uname";
   un.textContent = item.user;
   if (item.verified) un.insertAdjacentHTML("beforeend", VBADGE);
-  userRow.appendChild(un);
+  userRow.appendChild(linkToUser(un, item.user));
   var fb = document.createElement("button");
   fb.className = "rl-follow";
   fb.textContent = "フォロー";

@@ -125,7 +125,13 @@ window.KUSO_DB = (function () {
     { name: "TravelJP 編集部", msg: "お世話になっております、TravelJP編集部です✈️\n\nご投稿のクオリティに編集部一同衝撃を受けております。\n\n次号の巻頭特集にぜひご登場いただけないでしょうか。撮影は全て弊社負担、謝礼もご用意しております。" },
     { name: "FitLife Japan", msg: "はじめまして！FitLife Japanマーケティング部です💪\n\n弊社プロテインの公式アンバサダーをお願いしたく、ご連絡いたしました。\n\n・商品1年分無償提供\n・投稿ごとに報酬あり\n\n前向きにご検討ください！" },
     { name: "カフェ・ルミエール広報", msg: "素敵なご投稿をありがとうございます☕\n\n弊店の新メニュー試食会に特別ご招待させてください。\n\nもちろん交通費・謝礼もご用意しております。インフルエンサー様限定のご案内です🍰" },
-    { name: "TV番組『バズった人』制作班", msg: "突然失礼いたします。テレビ番組『バズった人』のディレクターです📺\n\n「今最も勢いのあるインフルエンサー」特集で、ぜひご出演いただきたくご連絡いたしました。\n\n収録は1日、謝礼あり。ご検討ください！" }
+    { name: "TV番組『バズった人』制作班", msg: "突然失礼いたします。テレビ番組『バズった人』のディレクターです📺\n\n「今最も勢いのあるインフルエンサー」特集で、ぜひご出演いただきたくご連絡いたしました。\n\n収録は1日、謝礼あり。ご検討ください！" },
+    { name: "MIRAI COIN 公式", msg: "【ご招待】次世代暗号資産 $MIRAI のアンバサダーに選ばれました🪙\n\n条件：1投稿につき $MIRAI 50,000枚（現在レート換算 約¥1,200,000）\n\n※報酬は全額トークンでのお支払いとなります\n※上場は来月を予定しております（予定）\n\n枠は残り2名です。お早めに！" },
+    { name: "髙橋（オンラインサロン運営）", msg: "はじめまして、経営者の髙橋です。\n\n正直に言います。あなたには“持ってる側”の匂いがする。\n\n私のサロン（月額¥98,000）に、今回だけ無料でご招待します。同世代の年収3,000万円以上の仲間が待っています。\n\n決断できる人にだけ返信してください。" },
+    { name: "水素水研究所 広報部", msg: "ご投稿を拝見しました。肌のツヤが尋常ではありません✨\n\n弊社の高濃度水素水を毎日飲んでいる方特有の輝きです（飲んでいらっしゃいませんよね？）\n\nぜひモニターとして1年分（¥480,000相当）をお受け取りください。感想の投稿は任意です。" },
+    { name: "文藝トキワ出版 編集部", msg: "突然のご連絡失礼いたします。出版社の文藝トキワと申します📚\n\n「1st写真集」の制作をご提案させてください。\n\n・撮影地：ハワイ（3泊5日・全額弊社負担）\n・初版：30,000部\n・印税：10%\n\nタイトル案は『まだ、誰も知らない』でいかがでしょうか。" },
+    { name: "近藤（元マネージャー）", msg: "はじめまして。以前は大手事務所でマネージャーをしておりました近藤と申します。\n\n15年この業界にいますが、あなたほどの原石は3人しか見たことがありません。\n\n事務所には入れません。私が個人で、あなただけを担当させてください。\n\n※契約料等は一切いただきません" },
+    { name: "Sunset Airlines Japan", msg: "この度、貴殿を弊社「空飛ぶアンバサダー」に選出いたしました✈️\n\n・国際線ビジネスクラス年間12往復 無償提供\n・空港ラウンジ生涯利用権\n\n条件は、旅先での投稿に #SunsetAir を付けていただくことのみです。\n\n返信をもって承諾とさせていただきます。" }
   ];
 
   /* ===== 名前入りコメント（{name}をプロフィール名に置換。APIは使わずテンプレで実現） ===== */
@@ -205,6 +211,98 @@ window.KUSO_DB = (function () {
     { user: "aoi_travels.jp", icon: "https://i.pravatar.cc/150?img=40", mutual: 9 },
     { user: "sora_bakery",    icon: "https://picsum.photos/seed/bakery-icon/150/150", mutual: 3 },
     { user: "yohei_films",    icon: "https://i.pravatar.cc/150?img=54", mutual: 21 }
+  ];
+
+  /* ===== 他人のプロフィール =====
+     常連キャラだけ手書きで用意する。ここに無いアカウント（偽アカ・VIP・コメント主など）は
+     user.js がユーザーネームから決定的に生成するので、どのアカウントを開いても行き止まりにならない。
+     bio は本家同様「複数行」。link/threads/highlights は有る人と無い人がいる。 */
+  var USER_PROFILES = {
+    "official_taku": {
+      name: "TAKU", verified: true, posts: 1284, followers: 812000, following: 312,
+      bio: ["俳優 / MC", "次回作は9月クランクイン🎬", "お仕事のご依頼は事務所まで"],
+      link: "taku-official.jp/works", threads: true,
+      highlights: ["現場", "映画", "オフ", "告知"], kw: "studio,camera"
+    },
+    "rina_gal": {
+      name: "りな", verified: false, posts: 892, followers: 43800, following: 1104,
+      bio: ["ギャルは死なない💅", "2001.4.12 / 渋谷", "ネイルとカフェが生きがい"],
+      link: "lit.link/rina", threads: true,
+      highlights: ["ネイル💅", "カフェ☕", "コスメ", "旅行✈️", "推し"], kw: "nail,manicure"
+    },
+    "emma_travels": {
+      name: "Emma", verified: true, posts: 431, followers: 128000, following: 892,
+      bio: ["📍currently: Tokyo", "38 countries and counting 🌏", "travel tips in highlights"],
+      link: "emmatravels.co/guides", threads: false,
+      highlights: ["Europe", "Asia", "Tips", "Gear"], kw: "budapest,night"
+    },
+    "kei.mindset": {
+      name: "けい", verified: false, posts: 2140, followers: 21400, following: 187,
+      bio: ["朝5時起き / 継続260日目", "『やる気』は探すものじゃない、出すもの。", "自己投資の記録を毎日更新"],
+      link: null, threads: false,
+      highlights: ["朝活", "読書", "筋トレ"], kw: "running,road"
+    },
+    "hime_icingcookie": {
+      name: "ひめ｜アイシングクッキー", verified: false, posts: 318, followers: 8940, following: 402,
+      bio: ["アイシングクッキー作家🍪", "オーダー受付中（DMへ）", "発送は全国対応します📦"],
+      link: "hime-cookie.base.shop", threads: false,
+      highlights: ["オーダー例", "発送", "レッスン"], kw: "cookie,icing"
+    },
+    "yuna.xoxo": {
+      name: "ゆな", verified: false, posts: 664, followers: 15200, following: 733,
+      bio: ["スイーツ食べ歩き🍰", "都内カフェ中心 / たまに旅"],
+      link: null, threads: false, highlights: [], kw: "cake,dessert"
+    },
+    "mia.wanderlust": {
+      name: "Mia", verified: false, posts: 522, followers: 67300, following: 388,
+      bio: ["ocean lover 🌊", "living my best life, no apologies"],
+      link: "linktr.ee/miaw", threads: true,
+      highlights: ["Beach", "Sunsets", "Surf"], kw: "beach,ocean"
+    },
+    "takashi_0358": {
+      name: "たかし", verified: false, posts: 87, followers: 342, following: 1890,
+      bio: ["ゴルフ⛳と釣り🎣が趣味デス", "宜しくお願い致します❗"],
+      link: null, threads: false, highlights: [], kw: "golf,green"
+    },
+    "sofia_bella": {
+      name: "Sofia", verified: false, posts: 1102, followers: 94100, following: 511,
+      bio: ["fashion / lifestyle", "collab → DM 📩"],
+      link: "sofiabella.style", threads: true,
+      highlights: ["OOTD", "PR", "Travel"], kw: "fashion,outfit"
+    },
+    "fan_no1_": {
+      name: "推し活垢", verified: false, posts: 4820, followers: 128, following: 2140,
+      bio: ["推しの投稿は全部保存してます", "無言フォロー失礼します🙏", "祭壇更新中"],
+      link: null, threads: false, highlights: ["祭壇🙏"], kw: "poster,wall"
+    },
+    "carlos_mx": {
+      name: "Carlos", verified: false, posts: 233, followers: 5410, following: 623,
+      bio: ["🇲🇽 CDMX", "tacos, música y buena vibra 🌮"],
+      link: null, threads: false, highlights: [], kw: "tacos,mexican"
+    }
+  };
+
+  /* 生成アカウント用の素材（ユーザーネームのハッシュで決定的に選ばれる） */
+  var USER_NAME_POOL = [
+    "ゆい", "はると", "さくら", "あおい", "けんと", "みなみ", "そうた", "ひなの", "りく", "まこ",
+    "Nao", "Yuki", "Ken", "Aya", "Rui", "Mei", "Sho", "Hana", "Jun", "Rio"
+  ];
+  var USER_BIO_POOL = [
+    "日々のことをゆるく残す用", "カメラ持って歩くのが好き📷", "都内在住 / 週末は遠出",
+    "食べたものしか載せません🍜", "無言フォローすみません🙏", "音楽と珈琲があれば生きていける",
+    "筋トレ3年目 / 継続は力なり", "服とレコードが好き", "猫と暮らしてます🐈",
+    "旅の記録 / 26カ国", "デザインの仕事してます", "note毎週更新中",
+    "２児の母👦👧 バタバタの毎日", "地方で農家やってます🌾", "ライブ通いが生きがい🎸"
+  ];
+  var USER_LINK_POOL = ["lit.link/", "linktr.ee/", "note.com/", "x.com/", "youtu.be/"];
+  var USER_HL_POOL = ["日常", "旅行✈️", "ごはん🍽", "推し", "お仕事", "思い出", "2024", "2025", "ペット🐾", "カフェ☕"];
+  /* グリッド用の画像キーワード（人によって世界観が変わるようジャンルごとに束ねてある） */
+  var USER_GRID_KW = [
+    ["cafe,latte", "book,desk", "street,city", "flower,vase", "window,light", "dessert,cake", "park,tree", "bicycle,road", "record,vinyl"],
+    ["gym,fitness", "running,road", "protein,shake", "mountain,hike", "sunrise,sky", "muscle,training", "trail,forest", "bike,cycling", "yoga,mat"],
+    ["ramen,noodles", "sushi,japanese", "izakaya,dinner", "curry,rice", "bakery,bread", "coffee,beans", "market,food", "bbq,grill", "sweets,parfait"],
+    ["beach,ocean", "airport,airplane", "temple,kyoto", "hotel,resort", "sunset,sea", "mountain,lake", "street,neon", "train,window", "map,travel"],
+    ["fashion,outfit", "sneakers,shoes", "makeup,beauty", "nail,manicure", "mirror,selfie", "shopping,store", "perfume,bottle", "jewelry,ring", "hair,salon"]
   ];
 
   /* ===== 設定とアクティビティ（本家スクショ4枚を完コピ） ===== */
@@ -314,21 +412,13 @@ window.KUSO_DB = (function () {
     { seed: "pf-tag-9", kw: "cafe,window",     multi: false }
   ];
 
-  /* ハンバーガーメニュー（それっぽく埋めるだけ・中身は Coming soon） */
-  var PROFILE_MENU = [
-    { ic: "⚙", label: "設定とアクティビティ" },
-    { ic: "🗂", label: "アーカイブ" },
-    { ic: "📊", label: "インサイト" },
-    { ic: "🔖", label: "保存済み" },
-    { ic: "⭐", label: "お気に入り" },
-    { ic: "💚", label: "親しい友達" },
-    { ic: "🔗", label: "QRコード" },
-    { ic: "🧾", label: "アカウントの種類とツール" },
-    { ic: "🕒", label: "利用時間" }
-  ];
-
   /* 検索サジェスト（有名人あるある。{name}はプロフィール名に置換） */
-  var SEARCH_SUFFIXES = ["彼女", "年収", "自宅", "wiki", "事務所", "本名", "身長", "すっぴん", "実家 金持ち"];
+  var SEARCH_SUFFIXES = [
+    "彼女", "年収", "自宅", "wiki", "事務所", "本名", "身長", "すっぴん", "実家 金持ち",
+    "炎上", "整形 疑惑", "昔の写真", "高校", "元カレ", "干された", "何者",
+    "経歴", "消えた理由", "性格 悪い", "嫌い", "痛い", "貯金額",
+    "アンチスレ", "身バレ", "住んでるとこ", "彼氏 匂わせ", "誰", "しくじり"
+  ];
 
   /* ===== 一般の人から届くDM（企業案件だけだと不自然なので） ===== */
   var DM_PEOPLE = [
@@ -483,7 +573,17 @@ window.KUSO_DB = (function () {
     "あなたの投稿が発見タブのトップに掲載されました",
     "あなたの投稿が急上昇1位になりました",
     "海外メディアがあなたの投稿を紹介しました",
-    "「今日のベストポスト」に選出されました"
+    "「今日のベストポスト」に選出されました",
+    "あなたの投稿がトレンド1位になりました（3時間連続）",
+    "Wikipediaにあなたの項目が作成されました",
+    "1時間で12,400人があなたをフォローしました",
+    "あなたの投稿が世界47か国の発見タブに表示されています",
+    "あなたの名前の検索数が先週比 3,800% になりました",
+    "有名人3人があなたの投稿をストーリーズでシェアしました",
+    "あなたの投稿が「今年の1枚」候補にノミネートされました",
+    "テレビ番組であなたの投稿が紹介されました",
+    "あなたのアカウントが「認証済みバッジ」の審査対象になりました",
+    "あなたの投稿を保存した人が10万人を超えました"
   ];
 
   return {
@@ -512,8 +612,13 @@ window.KUSO_DB = (function () {
     SEARCH_SUFFIXES: SEARCH_SUFFIXES,
     REEL_ITEMS: REEL_ITEMS,
     DISCOVER_ACCOUNTS: DISCOVER_ACCOUNTS,
-    PROFILE_MENU: PROFILE_MENU,
     SETTINGS_SECTIONS: SETTINGS_SECTIONS,
+    USER_PROFILES: USER_PROFILES,
+    USER_NAME_POOL: USER_NAME_POOL,
+    USER_BIO_POOL: USER_BIO_POOL,
+    USER_LINK_POOL: USER_LINK_POOL,
+    USER_HL_POOL: USER_HL_POOL,
+    USER_GRID_KW: USER_GRID_KW,
     AD_POSTS: AD_POSTS,
     PROFILE_REELS: PROFILE_REELS,
     PROFILE_TAGGED: PROFILE_TAGGED,

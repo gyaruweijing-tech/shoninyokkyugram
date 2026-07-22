@@ -70,11 +70,13 @@ function exCell(item) {
 
   cell.addEventListener("click", function () {
     if (item.mine) {
-      switchView("home");
-      var el = document.querySelector('[data-id="' + item.postId + '"]');
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      /* 自分の投稿は実データがあるので、それをそのまま詳細で開く */
+      var mine = null;
+      posts.forEach(function (p) { if (p.id === item.postId) mine = p; });
+      if (mine) openPostDetail({ post: mine });
+      else switchView("home");
     } else {
-      toast("この投稿は Coming soon 🚧");
+      openPostDetail(item);
     }
   });
   return cell;
