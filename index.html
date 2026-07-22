@@ -49,6 +49,9 @@
     justify-content: space-between;
     padding: 10px 16px;
   }
+  /* .topbar.hidden=true を効かせる（display:flex が [hidden] に勝つため明示）。
+     独自ヘッダーを持つ設定/通知/リール/保存済み画面でロゴバーを隠す */
+  .topbar[hidden] { display: none; }
   .logo {
     font-family: "Segoe Script", "Brush Script MT", cursive;
     font-size: 19px;
@@ -1239,6 +1242,91 @@
   }
   .sv-tap.left { left: 0; }
   .sv-tap.right { right: 0; }
+
+  /* ===== 保存済み（本家完コピ） ===== */
+  .sav-top { display: flex; align-items: center; padding: 10px 14px; position: relative; }
+  .sav-top .st-back { flex-shrink: 0; }
+  .sav-title {
+    position: absolute; left: 0; right: 0; text-align: center;
+    font-weight: 700; font-size: 16px; pointer-events: none;
+  }
+  .sav-add {
+    margin-left: auto; width: 34px; height: 34px; border-radius: 50%;
+    background: #f2f2f2; border: none; color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 1;
+  }
+  .sav-add svg { width: 20px; height: 20px; }
+  .sav-chips {
+    display: flex; gap: 8px; padding: 4px 14px 12px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sav-chips::-webkit-scrollbar { display: none; }
+  .sav-chip {
+    flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--bg); color: var(--ink); padding: 8px 16px;
+    font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .sav-chip.active { background: #efefef; border-color: #efefef; }
+  .sav-body { padding-bottom: 20px; }
+  /* セクション見出し */
+  .sav-sechead {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px 8px;
+  }
+  .sav-sechead b { font-size: 17px; }
+  .sav-seclink {
+    background: none; border: none; color: var(--blue);
+    font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  /* すべてタブ：コレクションのミニ行（2列・カバー＋名前） */
+  .sav-mini-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; padding: 0 16px 6px;
+  }
+  .sav-mini { display: flex; align-items: center; gap: 12px; cursor: pointer; min-width: 0; }
+  .sav-mini-cover {
+    width: 56px; height: 56px; border-radius: 12px; object-fit: cover;
+    background: #efefef; flex-shrink: 0;
+  }
+  .sav-mini-body { min-width: 0; }
+  .sav-mini-name {
+    font-weight: 600; font-size: 14px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .sav-mini-priv { display: flex; align-items: center; gap: 4px; color: var(--sub); font-size: 13px; }
+  .sav-mini-priv svg { width: 12px; height: 12px; }
+  /* コレクションタブ：大カード（2列・カバー大＋名前下） */
+  .sav-coll-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px 12px; padding: 8px 16px;
+  }
+  .sav-coll-card { cursor: pointer; }
+  .sav-coll-cover {
+    width: 100%; aspect-ratio: 1; border-radius: 8px; object-fit: cover;
+    background: #efefef; display: block;
+  }
+  .sav-coll-quad {
+    width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px;
+    background: #efefef;
+  }
+  .sav-coll-quad img { width: 100%; height: 100%; object-fit: cover; background: #e4e4e4; }
+  .sav-coll-quad .empty { background: #eee; }
+  .sav-coll-name { margin-top: 8px; font-weight: 600; font-size: 15px; }
+  /* リール／投稿グリッド（3列） */
+  .sav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .sav-cell { position: relative; overflow: hidden; background: #dbdbdb; cursor: pointer; }
+  .sav-cell.reel { aspect-ratio: 3 / 4; }
+  .sav-cell.post { aspect-ratio: 1; }
+  .sav-cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* 空状態（シリーズ／オーディオ） */
+  .sav-empty { text-align: center; padding: 70px 30px; }
+  .sav-empty-ic {
+    width: 76px; height: 76px; border-radius: 50%; background: #efefef;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+    color: var(--ink);
+  }
+  .sav-empty-ic svg { width: 34px; height: 34px; }
+  .sav-empty b { display: block; font-size: 22px; margin-bottom: 8px; }
+  .sav-empty p { color: var(--sub); font-size: 15px; }
 </style>
 </head>
 <body>
@@ -1375,6 +1463,21 @@
       </div>
     </div>
     <div id="settingsList"></div>
+  </div>
+
+  <!-- saved view（保存済み／本家完コピ） -->
+  <div class="view" id="view-saved">
+    <div class="sav-top">
+      <button class="st-back" id="savedBack" aria-label="戻る">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>
+      </button>
+      <span class="sav-title">保存済み</span>
+      <button class="sav-add" id="savedAdd" aria-label="追加">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+    <div class="sav-chips" id="savedChips"></div>
+    <div class="sav-body" id="savedBody"></div>
   </div>
 
   <!-- reels view（本家完コピ） -->
@@ -1736,6 +1839,7 @@
 <script src="js/explore.js"></script>
 <script src="js/reels.js"></script>
 <script src="js/settings.js"></script>
+<script src="js/saved.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

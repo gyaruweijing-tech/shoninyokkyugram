@@ -515,6 +515,7 @@ function openProfileMenu() {
     row.appendChild(document.createTextNode(m.label));
     row.addEventListener("click", function () {
       if (m.label === "設定とアクティビティ") { $("pfMenuSheet").classList.remove("open"); switchView("settings"); }
+      else if (m.label === "保存済み") { $("pfMenuSheet").classList.remove("open"); openSaved("profile"); }
       else toast(m.label + "は Coming soon 🚧");
     });
     list.appendChild(row);
@@ -598,13 +599,14 @@ function followerRow(name, verified) {
 
 /* ================= views ================= */
 function switchView(name) {
-  ["home", "dm", "profile", "notif", "search", "reels", "settings"].forEach(function (v) {
+  ["home", "dm", "profile", "notif", "search", "reels", "settings", "saved"].forEach(function (v) {
     $("view-" + v).classList.toggle("active", v === name);
   });
   // 専用ヘッダーを持つ画面ではグローバルヘッダーを隠す
   document.querySelector(".topbar").hidden =
-    (name === "profile" || name === "notif" || name === "reels" || name === "settings");
+    (name === "profile" || name === "notif" || name === "reels" || name === "settings" || name === "saved");
   if (name === "settings") { renderSettings(""); $("settingsSearch").value = ""; }
+  if (name === "saved") { renderSaved(); }
   if (name !== "search") exPauseAll(); // 検索タブを離れたら動画を止める
   if (name !== "reels") rlPauseAll();  // リールタブを離れたら動画を止める
   if (name === "reels") { renderReels(); }

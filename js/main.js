@@ -30,6 +30,8 @@ $("exSearchInput").addEventListener("blur", function () {
 $("notifBell").addEventListener("click", function () { switchView("notif"); });
 $("notifBack").addEventListener("click", function () { switchView("home"); });
 $("settingsBack").addEventListener("click", function () { switchView("profile"); });
+$("savedBack").addEventListener("click", function () { switchView(savedReturnView); });
+$("savedAdd").addEventListener("click", function () { toast("新しいコレクションは Coming soon 🚧"); });
 $("settingsSearch").addEventListener("input", function () { renderSettings(this.value); });
 $("fileInput").addEventListener("change", function () {
   if (this.files && this.files[0]) openCompose(this.files[0]);

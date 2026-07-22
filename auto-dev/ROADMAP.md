@@ -17,7 +17,7 @@ Routineが毎回ここを読んで「未実装(status=todo)で、対応スクシ
 | ID | 機能 | スクショ名 | 優先度 | 状態 |
 |---|---|---|---|---|
 | S01 | アカウントセンター | set-account-center.png | P2 | todo |
-| S02 | 保存済み | set-saved.png | P1 | todo |
+| S02 | 保存済み | set-saved.png (+ -collections/-series/-reels/-posts) | P1 | done |
 | S03 | アーカイブ | set-archive.png | P1 | todo |
 | S04 | お知らせ（通知設定） | set-notifications.png | P2 | todo |
 | S05 | 時間管理 | set-time.png | P2 | todo |
