@@ -1,7 +1,7 @@
 # PROGRESS — Shoninyokkyugram（承認欲求グラム）
 
 ## 2026-07-18（夜）— 改名＋ストーリーズ＋ローカル実験環境
-- アプリ名決定: **Shoninyokkyugram**（リポジトリも kuso-instagram → shoninyokkyugram に改名、ローカルフォルダも移動）
+- アプリ名決定: **Shoninyokkyugram**（リポジトリも仮の名前から shoninyokkyugram に改名、ローカルフォルダも移動）
 - ストーリーズ実装: テンプレ10本（picsumフリー画像＋インフルエンサー風一言）。フルスクリーンビューア（プログレスバー・5秒自動送り・左右タップ・オフライン時グラデ）
 - `local-server.js` 追加: Vercelなしで /api を動かす依存ゼロサーバー（ポート3456）。キーは `.env`（git管理外・配信ブロック済み）から読む
 - 検証済み: API配線503応答・.env配信ブロック404・ストーリービューア動作
